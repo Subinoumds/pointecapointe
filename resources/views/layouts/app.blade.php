@@ -44,12 +44,12 @@
                 <img src="{{ asset('img/logo.jpg') }}" alt="Logo Pointe ça Pointe" class="h-20 w-auto">
             </a>            
             <ul class="hidden md:flex space-x-6">
-                <li><a href="{{ route('home') }}" class="font-semibold text-secondary-yellow hover:text-secondary-yellow transition-colors duration-300">Accueil</a></li>
-                <li><a href="{{ route('evenements') }}" class="font-semibold text-primary-blue hover:text-secondary-yellow transition-colors duration-300">Événements</a></li>
-                <li><a href="{{ route('repas') }}" class="font-semibold text-primary-blue hover:text-secondary-yellow transition-colors duration-300">Repas de groupe</a></li>
+                <li><a href="{{ route('home') }}" class="font-semibold {{ request()->routeIs('home') ? 'text-secondary-yellow' : 'text-primary-blue' }} hover:text-secondary-yellow transition-colors duration-300">Accueil</a></li>
+                <li><a href="{{ route('evenements') }}" class="font-semibold {{ request()->routeIs('evenements') ? 'text-secondary-yellow' : 'text-primary-blue' }} hover:text-secondary-yellow transition-colors duration-300">Événements</a></li>
+                <li><a href="{{ route('repas') }}" class="font-semibold {{ request()->routeIs('repas') ? 'text-secondary-yellow' : 'text-primary-blue' }} hover:text-secondary-yellow transition-colors duration-300">Repas de groupe</a></li>
                 <li class="relative">
                     <!-- Bouton principal -->
-                    <button id="menuToggle" class="flex items-center font-semibold text-primary-blue hover:text-secondary-yellow transition-colors duration-300 focus:outline-none">
+                    <button id="menuToggle" class="flex items-center font-semibold {{ request()->routeIs('menu', 'menus.midi', 'menus.groupe') ? 'text-secondary-yellow' : 'text-primary-blue' }} hover:text-secondary-yellow transition-colors duration-300 focus:outline-none">
                         Menus & Carte 
                         <i data-feather="chevron-down" class="inline-block w-4 h-4 ml-1"></i>
                     </button>
@@ -61,8 +61,8 @@
                         <a href="{{ route('menus.groupe') }}" class="block px-4 py-2 text-primary-blue hover:bg-light-blue">Menus de groupe</a>
                     </div>
                 </li>
-                <li><a href="{{ route('galerie') }}" class="font-semibold text-primary-blue hover:text-secondary-yellow transition-colors duration-300">Galerie</a></li>
-                <li><a href="{{ route('bistrot') }}" class="font-semibold text-primary-blue hover:text-secondary-yellow transition-colors duration-300">Définition BISTROT</a></li>
+                <li><a href="{{ route('galerie') }}" class="font-semibold {{ request()->routeIs('galerie') ? 'text-secondary-yellow' : 'text-primary-blue' }} hover:text-secondary-yellow transition-colors duration-300">Galerie</a></li>
+                <li><a href="{{ route('bistrot') }}" class="font-semibold {{ request()->routeIs('bistrot') ? 'text-secondary-yellow' : 'text-primary-blue' }} hover:text-secondary-yellow transition-colors duration-300">Définition BISTROT</a></li>
             </ul>
 
             <button id="mobileMenuBtn" class="md:hidden text-primary-blue p-2">
@@ -78,14 +78,14 @@
             </button>
         </div>
         <ul class="flex flex-col space-y-6">
-            <li><a href="{{ route('home') }}" class="text-xl font-semibold text-primary-blue hover:text-secondary-yellow transition-colors duration-300">Accueil</a></li>
-            <li><a href="{{ route('evenements') }}" class="text-xl font-semibold text-primary-blue hover:text-secondary-yellow transition-colors duration-300">Événements</a></li>
-            <li><a href="{{ route('repas') }}" class="text-xl font-semibold text-primary-blue hover:text-secondary-yellow transition-colors duration-300">Repas de groupe</a></li>
-            <li><a href="{{ route('menu') }}" class="text-xl font-semibold text-primary-blue hover:text-secondary-yellow transition-colors duration-300">Carte & Boissons</a></li>
-            <li><a href="{{ route('menus.midi') }}" class="text-xl font-semibold text-primary-blue hover:text-secondary-yellow transition-colors duration-300">Menus du midi</a></li>
-            <li><a href="{{ route('menus.groupe') }}" class="text-xl font-semibold text-primary-blue hover:text-secondary-yellow transition-colors duration-300">Menus de groupe</a></li>
-            <li><a href="{{ route('galerie') }}" class="text-xl font-semibold text-primary-blue hover:text-secondary-yellow transition-colors duration-300">Galerie</a></li>
-            <li><a href="{{ route('bistrot') }}" class="text-xl font-semibold text-primary-blue hover:text-secondary-yellow transition-colors duration-300">Définition BISTROT</a></li>
+            <li><a href="{{ route('home') }}" class="text-xl font-semibold {{ request()->routeIs('home') ? 'text-secondary-yellow' : 'text-primary-blue' }} hover:text-secondary-yellow transition-colors duration-300">Accueil</a></li>
+            <li><a href="{{ route('evenements') }}" class="text-xl font-semibold {{ request()->routeIs('evenements') ? 'text-secondary-yellow' : 'text-primary-blue' }} hover:text-secondary-yellow transition-colors duration-300">Événements</a></li>
+            <li><a href="{{ route('repas') }}" class="text-xl font-semibold {{ request()->routeIs('repas') ? 'text-secondary-yellow' : 'text-primary-blue' }} hover:text-secondary-yellow transition-colors duration-300">Repas de groupe</a></li>
+            <li><a href="{{ route('menu') }}" class="text-xl font-semibold {{ request()->routeIs('menu') ? 'text-secondary-yellow' : 'text-primary-blue' }} hover:text-secondary-yellow transition-colors duration-300">Carte & Boissons</a></li>
+            <li><a href="{{ route('menus.midi') }}" class="text-xl font-semibold {{ request()->routeIs('menus.midi') ? 'text-secondary-yellow' : 'text-primary-blue' }} hover:text-secondary-yellow transition-colors duration-300">Menus du midi</a></li>
+            <li><a href="{{ route('menus.groupe') }}" class="text-xl font-semibold {{ request()->routeIs('menus.groupe') ? 'text-secondary-yellow' : 'text-primary-blue' }} hover:text-secondary-yellow transition-colors duration-300">Menus de groupe</a></li>
+            <li><a href="{{ route('galerie') }}" class="text-xl font-semibold {{ request()->routeIs('galerie') ? 'text-secondary-yellow' : 'text-primary-blue' }} hover:text-secondary-yellow transition-colors duration-300">Galerie</a></li>
+            <li><a href="{{ route('bistrot') }}" class="text-xl font-semibold {{ request()->routeIs('bistrot') ? 'text-secondary-yellow' : 'text-primary-blue' }} hover:text-secondary-yellow transition-colors duration-300">Définition BISTROT</a></li>
         </ul>
     </div>
 
