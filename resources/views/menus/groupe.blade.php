@@ -269,7 +269,7 @@
                         <span>Dimanche: 10h30–17h00</span>
                     </li>
                 </ul>
-            </div>
+</div>
 
             <div>
                 <h3 class="text-2xl font-bold mb-6 text-secondary-yellow">Restons connectés : Votre table vous attend !</h3>

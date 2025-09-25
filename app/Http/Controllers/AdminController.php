@@ -11,6 +11,8 @@ use App\Models\MenuItem;
 use App\Models\Drink;
 use App\Models\Wine;
 use App\Models\GroupMenu;
+use App\Models\MiddayMenu;
+use App\Models\MiddayMenuCard;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
@@ -83,7 +85,8 @@ class AdminController extends Controller
         $drinks = Drink::count();
         $wines = Wine::count();
         $groupMenus = GroupMenu::count();
-        return view('admin.menu.index', compact('menuItems', 'drinks', 'wines', 'groupMenus'));
+        $middayMenus = MiddayMenu::count();
+        return view('admin.menu.index', compact('menuItems', 'drinks', 'wines', 'groupMenus', 'middayMenus'));
     }
 
     public function menuCreate()
@@ -611,5 +614,217 @@ class AdminController extends Controller
     {
         $groupMenu->delete();
         return redirect()->route('admin.group-menu.index')->with('success', 'Menu de groupe supprimé avec succès !');
+    }
+
+    // Gestion des menus du midi
+    public function middayMenuIndex()
+    {
+        $middayMenus = MiddayMenu::orderBy('sort_order')->get();
+        $middayMenuCards = MiddayMenuCard::orderBy('sort_order')->get();
+        return view('admin.menu-midi.index', compact('middayMenus', 'middayMenuCards'));
+    }
+
+    public function middayMenuCreate()
+    {
+        return view('admin.menu-midi.create');
+    }
+
+    public function middayMenuAddImages()
+    {
+        return view('admin.menu-midi.add-images');
+    }
+
+    public function middayMenuStoreImages(Request $request)
+    {
+        $request->validate([
+            'images' => 'required|array|min:1',
+            'images.*' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
+        ]);
+
+        $uploadedCount = 0;
+        
+        foreach ($request->file('images') as $image) {
+            $imageName = time() . '_' . $uploadedCount . '_' . $image->getClientOriginalName();
+            $image->storeAs('midday-menus', $imageName, 'public');
+            
+            MiddayMenu::create([
+                'name' => 'Image ' . ($uploadedCount + 1),
+                'description' => 'Image ajoutée au carousel',
+                'price' => 0.00,
+                'image' => $imageName,
+                'is_active' => true,
+                'sort_order' => MiddayMenu::max('sort_order') + 1
+            ]);
+            
+            $uploadedCount++;
+        }
+
+        $message = $uploadedCount === 1 ? 'Image ajoutée au carousel !' : $uploadedCount . ' images ajoutées au carousel !';
+        return redirect()->route('admin.menu-midi.index')->with('success', $message);
+    }
+
+    public function middayMenuEditImage(MiddayMenu $middayMenu)
+    {
+        return view('admin.menu-midi.edit-image', compact('middayMenu'));
+    }
+
+    public function middayMenuUpdateImage(Request $request, MiddayMenu $middayMenu)
+    {
+        $request->validate([
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
+        ]);
+
+        // Supprimer l'ancienne image
+        if ($middayMenu->image) {
+            Storage::disk('public')->delete('midday-menus/' . $middayMenu->image);
+        }
+
+        // Uploader la nouvelle image
+        $image = $request->file('image');
+        $imageName = time() . '_' . $image->getClientOriginalName();
+        $image->storeAs('midday-menus', $imageName, 'public');
+
+        // Mettre à jour l'enregistrement
+        $middayMenu->update([
+            'image' => $imageName
+        ]);
+
+        return redirect()->route('admin.menu-midi.index')->with('success', 'Image mise à jour avec succès !');
+    }
+
+    public function middayMenuStore(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'price' => 'required|numeric|min:0',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'sort_order' => 'nullable|integer|min:0',
+            'is_active' => 'boolean'
+        ]);
+
+        $data = $request->all();
+        $data['is_active'] = $request->has('is_active');
+        
+        // Gestion de l'upload d'image
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = time() . '_' . $image->getClientOriginalName();
+            $image->storeAs('midday-menus', $imageName, 'public');
+            $data['image'] = $imageName;
+        }
+        
+        MiddayMenu::create($data);
+        return redirect()->route('admin.menu-midi.index')->with('success', 'Menu du midi créé avec succès !');
+    }
+
+    public function middayMenuEdit(MiddayMenu $middayMenu)
+    {
+        return view('admin.menu-midi.edit', compact('middayMenu'));
+    }
+
+    public function middayMenuUpdate(Request $request, MiddayMenu $middayMenu)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'price' => 'required|numeric|min:0',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'sort_order' => 'nullable|integer|min:0',
+            'is_active' => 'boolean'
+        ]);
+
+        $data = $request->all();
+        $data['is_active'] = $request->has('is_active');
+        
+        // Gestion de l'upload d'image
+        if ($request->hasFile('image')) {
+            // Supprimer l'ancienne image
+            if ($middayMenu->image) {
+                Storage::disk('public')->delete('midday-menus/' . $middayMenu->image);
+            }
+            
+            $image = $request->file('image');
+            $imageName = time() . '_' . $image->getClientOriginalName();
+            $image->storeAs('midday-menus', $imageName, 'public');
+            $data['image'] = $imageName;
+        }
+        
+        $middayMenu->update($data);
+        return redirect()->route('admin.menu-midi.index')->with('success', 'Menu du midi mis à jour avec succès !');
+    }
+
+    public function middayMenuDestroy(MiddayMenu $middayMenu)
+    {
+        if ($middayMenu->image) {
+            Storage::disk('public')->delete('midday-menus/' . $middayMenu->image);
+        }
+        $middayMenu->delete();
+        return redirect()->route('admin.menu-midi.index')->with('success', 'Menu du midi supprimé avec succès !');
+    }
+
+    // Gestion des cartes de menus du midi
+    public function middayMenuCardIndex()
+    {
+        $middayMenuCards = MiddayMenuCard::orderBy('sort_order')->get();
+        return view('admin.menu-midi-cards.index', compact('middayMenuCards'));
+    }
+
+    public function middayMenuCardCreate()
+    {
+        return view('admin.menu-midi-cards.create');
+    }
+
+    public function middayMenuCardStore(Request $request)
+    {
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'subtitle' => 'nullable|string|max:255',
+            'price' => 'nullable|numeric|min:0',
+            'items' => 'required|array|min:1',
+            'items.*.type' => 'required|string|max:255',
+            'items.*.name' => 'required|string|max:255',
+            'items.*.description' => 'nullable|string',
+            'sort_order' => 'nullable|integer|min:0',
+            'is_active' => 'boolean'
+        ]);
+
+        $data = $request->all();
+        $data['is_active'] = $request->has('is_active');
+        
+        MiddayMenuCard::create($data);
+        return redirect()->route('admin.menu-midi.index')->with('success', 'Carte de menu créée avec succès !');
+    }
+
+    public function middayMenuCardEdit(MiddayMenuCard $middayMenuCard)
+    {
+        return view('admin.menu-midi-cards.edit', compact('middayMenuCard'));
+    }
+
+    public function middayMenuCardUpdate(Request $request, MiddayMenuCard $middayMenuCard)
+    {
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'subtitle' => 'nullable|string|max:255',
+            'price' => 'nullable|numeric|min:0',
+            'items' => 'required|array|min:1',
+            'items.*.type' => 'required|string|max:255',
+            'items.*.name' => 'required|string|max:255',
+            'items.*.description' => 'nullable|string',
+            'sort_order' => 'nullable|integer|min:0',
+            'is_active' => 'boolean'
+        ]);
+
+        $data = $request->all();
+        $data['is_active'] = $request->has('is_active');
+        
+        $middayMenuCard->update($data);
+        return redirect()->route('admin.menu-midi.index')->with('success', 'Carte de menu mise à jour avec succès !');
+    }
+
+    public function middayMenuCardDestroy(MiddayMenuCard $middayMenuCard)
+    {
+        $middayMenuCard->delete();
+        return redirect()->route('admin.menu-midi.index')->with('success', 'Carte de menu supprimée avec succès !');
     }
 }

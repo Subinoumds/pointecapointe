@@ -36,7 +36,9 @@ Route::get('/menu', function () {
 })->name('menu');
 
 Route::get('/menus-midi', function () {
-    return view('menus.midi');
+    $middayMenus = \App\Models\MiddayMenu::getActive();
+    $middayMenuCards = \App\Models\MiddayMenuCard::getActive();
+    return view('menus.midi', compact('middayMenus', 'middayMenuCards'));
 })->name('menus.midi');
 
 Route::get('/menus-groupe', function () {
@@ -120,4 +122,28 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('group-menu/{groupMenu}/edit', [App\Http\Controllers\AdminController::class, 'groupMenuEdit'])->name('group-menu.edit');
     Route::put('group-menu/{groupMenu}', [App\Http\Controllers\AdminController::class, 'groupMenuUpdate'])->name('group-menu.update');
     Route::delete('group-menu/{groupMenu}', [App\Http\Controllers\AdminController::class, 'groupMenuDestroy'])->name('group-menu.destroy');
+    
+    // Gestion des menus du midi
+    Route::get('menu-midi', [App\Http\Controllers\AdminController::class, 'middayMenuIndex'])->name('menu-midi.index');
+    Route::get('menu-midi/create', [App\Http\Controllers\AdminController::class, 'middayMenuCreate'])->name('menu-midi.create');
+    Route::post('menu-midi', [App\Http\Controllers\AdminController::class, 'middayMenuStore'])->name('menu-midi.store');
+    Route::get('menu-midi/{middayMenu}/edit', [App\Http\Controllers\AdminController::class, 'middayMenuEdit'])->name('menu-midi.edit');
+    Route::put('menu-midi/{middayMenu}', [App\Http\Controllers\AdminController::class, 'middayMenuUpdate'])->name('menu-midi.update');
+    Route::delete('menu-midi/{middayMenu}', [App\Http\Controllers\AdminController::class, 'middayMenuDestroy'])->name('menu-midi.destroy');
+    
+    // Upload d'images pour le carousel
+    Route::get('menu-midi/add-images', [App\Http\Controllers\AdminController::class, 'middayMenuAddImages'])->name('menu-midi.add-images');
+    Route::post('menu-midi/store-images', [App\Http\Controllers\AdminController::class, 'middayMenuStoreImages'])->name('menu-midi.store-images');
+    
+    // Modification d'image simple
+    Route::get('menu-midi/{middayMenu}/edit-image', [App\Http\Controllers\AdminController::class, 'middayMenuEditImage'])->name('menu-midi.edit-image');
+    Route::put('menu-midi/{middayMenu}/update-image', [App\Http\Controllers\AdminController::class, 'middayMenuUpdateImage'])->name('menu-midi.update-image');
+    
+    // Gestion des cartes de menus du midi
+    Route::get('menu-midi-cards', [App\Http\Controllers\AdminController::class, 'middayMenuCardIndex'])->name('menu-midi-cards.index');
+    Route::get('menu-midi-cards/create', [App\Http\Controllers\AdminController::class, 'middayMenuCardCreate'])->name('menu-midi-cards.create');
+    Route::post('menu-midi-cards', [App\Http\Controllers\AdminController::class, 'middayMenuCardStore'])->name('menu-midi-cards.store');
+    Route::get('menu-midi-cards/{middayMenuCard}/edit', [App\Http\Controllers\AdminController::class, 'middayMenuCardEdit'])->name('menu-midi-cards.edit');
+    Route::put('menu-midi-cards/{middayMenuCard}', [App\Http\Controllers\AdminController::class, 'middayMenuCardUpdate'])->name('menu-midi-cards.update');
+    Route::delete('menu-midi-cards/{middayMenuCard}', [App\Http\Controllers\AdminController::class, 'middayMenuCardDestroy'])->name('menu-midi-cards.destroy');
 });

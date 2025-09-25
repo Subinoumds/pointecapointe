@@ -14,7 +14,7 @@
                 </a>
             </div>
             
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
                 <!-- Éléments de menu -->
                 <div class="bg-light-blue p-6 rounded-lg">
                     <div class="flex items-center mb-4">
@@ -98,12 +98,33 @@
                         </a>
                     </div>
                 </div>
+
+                <!-- Menus du midi -->
+                <div class="bg-light-blue p-6 rounded-lg">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 bg-primary-blue rounded-lg flex items-center justify-center mr-4">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        <h2 class="text-2xl font-bold text-primary-blue">Menus du midi</h2>
+                    </div>
+                    <p class="text-gray-600 mb-4">Gérez les plats du jour avec images</p>
+                    <div class="space-y-2">
+                        <a href="{{ route('admin.menu-midi.index') }}" class="block w-full px-4 py-2 bg-primary-blue text-white font-semibold rounded-lg hover:bg-secondary-yellow hover:text-primary-blue transition duration-300 text-center">
+                            Gérer les menus du midi
+                        </a>
+                        <a href="{{ route('admin.menu-midi.create') }}" class="block w-full px-4 py-2 bg-secondary-yellow text-primary-blue font-semibold rounded-lg hover:bg-primary-blue hover:text-white transition duration-300 text-center">
+                            + Ajouter un menu du midi
+                        </a>
+                    </div>
+                </div>
             </div>
 
             <!-- Statistiques rapides -->
             <div class="mt-12 bg-gray-50 p-6 rounded-lg">
                 <h3 class="text-2xl font-bold text-primary-blue mb-6">Statistiques rapides</h3>
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-6">
                     <div class="text-center">
                         <div class="text-3xl font-bold text-primary-blue">{{ \App\Models\MenuItem::count() }}</div>
                         <div class="text-gray-600">Éléments de menu</div>
@@ -119,6 +140,10 @@
                     <div class="text-center">
                         <div class="text-3xl font-bold text-primary-blue">{{ \App\Models\GroupMenu::count() }}</div>
                         <div class="text-gray-600">Menus de groupe</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-primary-blue">{{ \App\Models\MiddayMenu::count() }}</div>
+                        <div class="text-gray-600">Menus du midi</div>
                     </div>
                 </div>
             </div>
