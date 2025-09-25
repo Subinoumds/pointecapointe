@@ -1,10 +1,10 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
 @section('title', 'Gestion des événements - Administration')
 @section('description', 'Gérez les événements du site Pointe ça Pointe')
 
 @section('content')
-<div class="min-h-screen bg-gray-100 pt-20">
+<div class="min-h-screen bg-gray-100 py-8">
     <div class="container mx-auto max-w-7xl px-4 py-20">
         <div class="bg-white rounded-lg shadow-lg p-8">
             <div class="flex justify-between items-center mb-8">
