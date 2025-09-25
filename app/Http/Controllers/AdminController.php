@@ -7,6 +7,9 @@ use App\Models\Content;
 use App\Models\Menu;
 use App\Models\Image;
 use App\Models\Event;
+use App\Models\MenuItem;
+use App\Models\Drink;
+use App\Models\Wine;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
@@ -336,5 +339,204 @@ class AdminController extends Controller
     {
         $event->delete();
         return redirect()->route('admin.event.index')->with('success', 'Événement supprimé avec succès !');
+    }
+
+    // Gestion des éléments de menu
+    public function menuItemIndex()
+    {
+        $menuItems = MenuItem::orderBy('type')->orderBy('sort_order')->get();
+        return view('admin.menu-item.index', compact('menuItems'));
+    }
+
+    public function menuItemCreate()
+    {
+        return view('admin.menu-item.create');
+    }
+
+    public function menuItemStore(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'type' => 'required|in:entree,plat,burger,dessert,menu_enfant',
+            'description' => 'nullable|string',
+            'price' => 'required|numeric|min:0',
+            'sort_order' => 'nullable|integer|min:0',
+            'is_active' => 'boolean'
+        ]);
+
+        $data = $request->all();
+        $data['is_active'] = $request->has('is_active');
+        
+        MenuItem::create($data);
+        return redirect()->route('admin.menu-item.index')->with('success', 'Élément de menu créé avec succès !');
+    }
+
+    public function menuItemEdit(MenuItem $menuItem)
+    {
+        return view('admin.menu-item.edit', compact('menuItem'));
+    }
+
+    public function menuItemUpdate(Request $request, MenuItem $menuItem)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'type' => 'required|in:entree,plat,burger,dessert,menu_enfant',
+            'description' => 'nullable|string',
+            'price' => 'required|numeric|min:0',
+            'sort_order' => 'nullable|integer|min:0',
+            'is_active' => 'boolean'
+        ]);
+
+        $data = $request->all();
+        $data['is_active'] = $request->has('is_active');
+        
+        $menuItem->update($data);
+        return redirect()->route('admin.menu-item.index')->with('success', 'Élément de menu mis à jour avec succès !');
+    }
+
+    public function menuItemDestroy(MenuItem $menuItem)
+    {
+        $menuItem->delete();
+        return redirect()->route('admin.menu-item.index')->with('success', 'Élément de menu supprimé avec succès !');
+    }
+
+    // Gestion des boissons
+    public function drinkIndex()
+    {
+        $drinks = Drink::orderBy('category')->orderBy('sort_order')->get();
+        return view('admin.drink.index', compact('drinks'));
+    }
+
+    public function drinkCreate()
+    {
+        return view('admin.drink.create');
+    }
+
+    public function drinkStore(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'category' => 'required|in:boissons_fraiches,aperitifs_digestifs,boissons_chaudes',
+            'description' => 'nullable|string',
+            'sort_order' => 'nullable|integer|min:0',
+            'is_active' => 'boolean'
+        ]);
+
+        $data = $request->all();
+        $data['is_active'] = $request->has('is_active');
+        
+        Drink::create($data);
+        return redirect()->route('admin.drink.index')->with('success', 'Boisson créée avec succès !');
+    }
+
+    public function drinkEdit(Drink $drink)
+    {
+        return view('admin.drink.edit', compact('drink'));
+    }
+
+    public function drinkUpdate(Request $request, Drink $drink)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'category' => 'required|in:boissons_fraiches,aperitifs_digestifs,boissons_chaudes',
+            'description' => 'nullable|string',
+            'sort_order' => 'nullable|integer|min:0',
+            'is_active' => 'boolean'
+        ]);
+
+        $data = $request->all();
+        $data['is_active'] = $request->has('is_active');
+        
+        $drink->update($data);
+        return redirect()->route('admin.drink.index')->with('success', 'Boisson mise à jour avec succès !');
+    }
+
+    public function drinkDestroy(Drink $drink)
+    {
+        $drink->delete();
+        return redirect()->route('admin.drink.index')->with('success', 'Boisson supprimée avec succès !');
+    }
+
+    // Gestion des vins
+    public function wineIndex()
+    {
+        $wines = Wine::orderBy('sort_order')->get();
+        return view('admin.wine.index', compact('wines'));
+    }
+
+    public function wineCreate()
+    {
+        return view('admin.wine.create');
+    }
+
+    public function wineStore(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'image' => 'nullable|image|max:2048',
+            'glass_price' => 'required|numeric|min:0',
+            'bottle_price' => 'required|numeric|min:0',
+            'sort_order' => 'nullable|integer|min:0',
+            'is_active' => 'boolean'
+        ]);
+
+        $data = $request->all();
+        $data['is_active'] = $request->has('is_active');
+
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $path = $file->storeAs('vins', $filename, 'public');
+            $data['image'] = $filename;
+        }
+        
+        Wine::create($data);
+        return redirect()->route('admin.wine.index')->with('success', 'Vin créé avec succès !');
+    }
+
+    public function wineEdit(Wine $wine)
+    {
+        return view('admin.wine.edit', compact('wine'));
+    }
+
+    public function wineUpdate(Request $request, Wine $wine)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'image' => 'nullable|image|max:2048',
+            'glass_price' => 'required|numeric|min:0',
+            'bottle_price' => 'required|numeric|min:0',
+            'sort_order' => 'nullable|integer|min:0',
+            'is_active' => 'boolean'
+        ]);
+
+        $data = $request->all();
+        $data['is_active'] = $request->has('is_active');
+
+        if ($request->hasFile('image')) {
+            // Supprimer l'ancienne image
+            if ($wine->image) {
+                Storage::disk('public')->delete('vins/' . $wine->image);
+            }
+            
+            $file = $request->file('image');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $path = $file->storeAs('vins', $filename, 'public');
+            $data['image'] = $filename;
+        }
+        
+        $wine->update($data);
+        return redirect()->route('admin.wine.index')->with('success', 'Vin mis à jour avec succès !');
+    }
+
+    public function wineDestroy(Wine $wine)
+    {
+        if ($wine->image) {
+            Storage::disk('public')->delete('vins/' . $wine->image);
+        }
+        $wine->delete();
+        return redirect()->route('admin.wine.index')->with('success', 'Vin supprimé avec succès !');
     }
 }

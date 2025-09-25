@@ -20,7 +20,19 @@ Route::get('/repas', function () {
 })->name('repas');
 
 Route::get('/menu', function () {
-    return view('menu');
+    $entrees = \App\Models\MenuItem::getByType('entree');
+    $plats = \App\Models\MenuItem::getByType('plat');
+    $burgers = \App\Models\MenuItem::getByType('burger');
+    $desserts = \App\Models\MenuItem::getByType('dessert');
+    $menuEnfant = \App\Models\MenuItem::getByType('menu_enfant');
+    
+    $boissonsFraiches = \App\Models\Drink::getByCategory('boissons_fraiches');
+    $aperitifsDigestifs = \App\Models\Drink::getByCategory('aperitifs_digestifs');
+    $boissonsChaudes = \App\Models\Drink::getByCategory('boissons_chaudes');
+    
+    $vins = \App\Models\Wine::getActive();
+    
+    return view('menu', compact('entrees', 'plats', 'burgers', 'desserts', 'menuEnfant', 'boissonsFraiches', 'aperitifsDigestifs', 'boissonsChaudes', 'vins'));
 })->name('menu');
 
 Route::get('/menus-midi', function () {
@@ -75,4 +87,28 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('event/{event}/edit', [App\Http\Controllers\AdminController::class, 'eventEdit'])->name('event.edit');
     Route::put('event/{event}', [App\Http\Controllers\AdminController::class, 'eventUpdate'])->name('event.update');
     Route::delete('event/{event}', [App\Http\Controllers\AdminController::class, 'eventDestroy'])->name('event.destroy');
+    
+    // Gestion des éléments de menu
+    Route::get('menu-item', [App\Http\Controllers\AdminController::class, 'menuItemIndex'])->name('menu-item.index');
+    Route::get('menu-item/create', [App\Http\Controllers\AdminController::class, 'menuItemCreate'])->name('menu-item.create');
+    Route::post('menu-item', [App\Http\Controllers\AdminController::class, 'menuItemStore'])->name('menu-item.store');
+    Route::get('menu-item/{menuItem}/edit', [App\Http\Controllers\AdminController::class, 'menuItemEdit'])->name('menu-item.edit');
+    Route::put('menu-item/{menuItem}', [App\Http\Controllers\AdminController::class, 'menuItemUpdate'])->name('menu-item.update');
+    Route::delete('menu-item/{menuItem}', [App\Http\Controllers\AdminController::class, 'menuItemDestroy'])->name('menu-item.destroy');
+    
+    // Gestion des boissons
+    Route::get('drink', [App\Http\Controllers\AdminController::class, 'drinkIndex'])->name('drink.index');
+    Route::get('drink/create', [App\Http\Controllers\AdminController::class, 'drinkCreate'])->name('drink.create');
+    Route::post('drink', [App\Http\Controllers\AdminController::class, 'drinkStore'])->name('drink.store');
+    Route::get('drink/{drink}/edit', [App\Http\Controllers\AdminController::class, 'drinkEdit'])->name('drink.edit');
+    Route::put('drink/{drink}', [App\Http\Controllers\AdminController::class, 'drinkUpdate'])->name('drink.update');
+    Route::delete('drink/{drink}', [App\Http\Controllers\AdminController::class, 'drinkDestroy'])->name('drink.destroy');
+    
+    // Gestion des vins
+    Route::get('wine', [App\Http\Controllers\AdminController::class, 'wineIndex'])->name('wine.index');
+    Route::get('wine/create', [App\Http\Controllers\AdminController::class, 'wineCreate'])->name('wine.create');
+    Route::post('wine', [App\Http\Controllers\AdminController::class, 'wineStore'])->name('wine.store');
+    Route::get('wine/{wine}/edit', [App\Http\Controllers\AdminController::class, 'wineEdit'])->name('wine.edit');
+    Route::put('wine/{wine}', [App\Http\Controllers\AdminController::class, 'wineUpdate'])->name('wine.update');
+    Route::delete('wine/{wine}', [App\Http\Controllers\AdminController::class, 'wineDestroy'])->name('wine.destroy');
 });
