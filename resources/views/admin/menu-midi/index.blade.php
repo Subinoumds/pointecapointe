@@ -14,9 +14,9 @@
 
         <!-- Section 1: Gestion des cartes de menus -->
         <div class="bg-white rounded-lg shadow-lg p-8 mb-8">
-            <div class="flex justify-between items-center mb-8">
-                <h2 class="text-3xl font-bold text-primary-blue">📋 Cartes de Menus</h2>
-                <a href="{{ route('admin.menu-midi-cards.create') }}" class="px-6 py-3 bg-secondary-yellow text-primary-blue font-semibold rounded-lg hover:bg-primary-blue hover:text-white transition duration-300">
+            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-8 space-y-4 sm:space-y-0">
+                <h2 class="text-2xl sm:text-3xl font-bold text-primary-blue">📋 Cartes de Menus</h2>
+                <a href="{{ route('admin.menu-midi-cards.create') }}" class="px-3 py-2 bg-secondary-yellow text-primary-blue font-medium rounded-md hover:bg-primary-blue hover:text-white transition duration-300 text-center text-sm">
                     + Ajouter une carte
                 </a>
             </div>
@@ -60,9 +60,9 @@
 
         <!-- Section 2: Gestion des images du carousel -->
         <div class="bg-white rounded-lg shadow-lg p-8">
-            <div class="flex justify-between items-center mb-8">
-                <h2 class="text-3xl font-bold text-primary-blue">🖼️ Images du Carousel</h2>
-                <a href="{{ route('admin.menu-midi.add-images') }}" class="px-6 py-3 bg-secondary-yellow text-primary-blue font-semibold rounded-lg hover:bg-primary-blue hover:text-white transition duration-300">
+            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-8 space-y-4 sm:space-y-0">
+                <h2 class="text-2xl sm:text-3xl font-bold text-primary-blue">🖼️ Images du Carousel</h2>
+                <a href="{{ route('admin.menu-midi.add-images') }}" class="px-3 py-2 bg-secondary-yellow text-primary-blue font-medium rounded-md hover:bg-primary-blue hover:text-white transition duration-300 text-center text-sm">
                     + Ajouter des images
                 </a>
             </div>

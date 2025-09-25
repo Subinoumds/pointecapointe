@@ -21,7 +21,8 @@ class Drink extends Model
     // Méthode pour récupérer les boissons par catégorie
     public static function getByCategory($category)
     {
-        return self::where('category', $category)
+        return self::select('id', 'name', 'description', 'price', 'category', 'sort_order')
+                   ->where('category', $category)
                    ->where('is_active', true)
                    ->orderBy('sort_order')
                    ->get();

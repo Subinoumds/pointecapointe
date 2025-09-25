@@ -4,14 +4,16 @@ use Illuminate\Support\Facades\Route;
 
 // Page d'accueil
 Route::get('/', function () {
-    $contents = \App\Models\Content::all()->pluck('content', 'key');
+    $contents = \Illuminate\Support\Facades\Cache::remember('home_contents', 300, function () {
+        return \App\Models\Content::select('key', 'content')->get()->pluck('content', 'key');
+    });
     return view('home', compact('contents'));
 })->name('home');
 
 // Pages du site
 Route::get('/evenements', function () {
-    $upcomingEvents = \App\Models\Event::upcoming()->orderBy('event_date')->get();
-    $pastEvents = \App\Models\Event::past()->orderBy('event_date', 'desc')->get();
+    $upcomingEvents = \App\Models\Event::upcoming()->select('id', 'title', 'description', 'event_date', 'image')->orderBy('event_date')->get();
+    $pastEvents = \App\Models\Event::past()->select('id', 'title', 'description', 'event_date', 'image')->orderBy('event_date', 'desc')->get();
     return view('evenements', compact('upcomingEvents', 'pastEvents'));
 })->name('evenements');
 
@@ -20,17 +22,35 @@ Route::get('/repas', function () {
 })->name('repas');
 
 Route::get('/menu', function () {
-    $entrees = \App\Models\MenuItem::getByType('entree');
-    $plats = \App\Models\MenuItem::getByType('plat');
-    $burgers = \App\Models\MenuItem::getByType('burger');
-    $desserts = \App\Models\MenuItem::getByType('dessert');
-    $menuEnfant = \App\Models\MenuItem::getByType('menu_enfant');
+    $entrees = \Illuminate\Support\Facades\Cache::remember('menu_entrees', 300, function () {
+        return \App\Models\MenuItem::getByType('entree');
+    });
+    $plats = \Illuminate\Support\Facades\Cache::remember('menu_plats', 300, function () {
+        return \App\Models\MenuItem::getByType('plat');
+    });
+    $burgers = \Illuminate\Support\Facades\Cache::remember('menu_burgers', 300, function () {
+        return \App\Models\MenuItem::getByType('burger');
+    });
+    $desserts = \Illuminate\Support\Facades\Cache::remember('menu_desserts', 300, function () {
+        return \App\Models\MenuItem::getByType('dessert');
+    });
+    $menuEnfant = \Illuminate\Support\Facades\Cache::remember('menu_enfant', 300, function () {
+        return \App\Models\MenuItem::getByType('menu_enfant');
+    });
     
-    $boissonsFraiches = \App\Models\Drink::getByCategory('boissons_fraiches');
-    $aperitifsDigestifs = \App\Models\Drink::getByCategory('aperitifs_digestifs');
-    $boissonsChaudes = \App\Models\Drink::getByCategory('boissons_chaudes');
+    $boissonsFraiches = \Illuminate\Support\Facades\Cache::remember('boissons_fraiches', 300, function () {
+        return \App\Models\Drink::getByCategory('boissons_fraiches');
+    });
+    $aperitifsDigestifs = \Illuminate\Support\Facades\Cache::remember('aperitifs_digestifs', 300, function () {
+        return \App\Models\Drink::getByCategory('aperitifs_digestifs');
+    });
+    $boissonsChaudes = \Illuminate\Support\Facades\Cache::remember('boissons_chaudes', 300, function () {
+        return \App\Models\Drink::getByCategory('boissons_chaudes');
+    });
     
-    $vins = \App\Models\Wine::getActive();
+    $vins = \Illuminate\Support\Facades\Cache::remember('wines', 300, function () {
+        return \App\Models\Wine::getActive();
+    });
     
     return view('menu', compact('entrees', 'plats', 'burgers', 'desserts', 'menuEnfant', 'boissonsFraiches', 'aperitifsDigestifs', 'boissonsChaudes', 'vins'));
 })->name('menu');
@@ -47,19 +67,54 @@ Route::get('/menus-groupe', function () {
 })->name('menus.groupe');
 
 Route::get('/galerie', function () {
-    return view('galerie');
+    $galleryImages = \Illuminate\Support\Facades\Cache::remember('gallery_images', 300, function () {
+        return \App\Models\GalleryImage::select('id', 'filename', 'alt_text', 'sort_order')->where('is_active', true)->orderBy('sort_order')->get();
+    });
+    return view('galerie', compact('galleryImages'));
 })->name('galerie');
 
 Route::get('/bistrot', function () {
     return view('bistrot');
 })->name('bistrot');
 
+// Redirections pour les anciens liens HTML
+Route::get('/index.html', function () {
+    return redirect()->route('home');
+});
+
+Route::get('/bistrot.html', function () {
+    return redirect()->route('bistrot');
+});
+
+Route::get('/menu.html', function () {
+    return redirect()->route('menu');
+});
+
+Route::get('/galerie.html', function () {
+    return redirect()->route('galerie');
+});
+
+Route::get('/evenements.html', function () {
+    return redirect()->route('evenements');
+});
+
+Route::get('/repas.html', function () {
+    return redirect()->route('repas');
+});
+
+Route::get('/menus-midi.html', function () {
+    return redirect()->route('menus.midi');
+});
+
+Route::get('/menus-groupe.html', function () {
+    return redirect()->route('menus.groupe');
+});
+
 // Routes d'administration
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [App\Http\Controllers\AdminController::class, 'index'])->name('index');
     
     // Gestion du contenu
-    Route::resource('content', App\Http\Controllers\AdminController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
     Route::get('content', [App\Http\Controllers\AdminController::class, 'contentIndex'])->name('content.index');
     Route::get('content/create', [App\Http\Controllers\AdminController::class, 'contentCreate'])->name('content.create');
     Route::post('content', [App\Http\Controllers\AdminController::class, 'contentStore'])->name('content.store');

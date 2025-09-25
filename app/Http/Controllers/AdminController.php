@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Content;
 use App\Models\Menu;
 use App\Models\Image;
+use App\Models\GalleryImage;
 use App\Models\Event;
 use App\Models\MenuItem;
 use App\Models\Drink;
@@ -129,10 +130,10 @@ class AdminController extends Controller
         return redirect()->route('admin.menu.index')->with('success', 'Menu supprimé avec succès !');
     }
 
-    // Gestion des images
+    // Gestion des images de la galerie
     public function imageIndex()
     {
-        $images = Image::orderBy('category')->orderBy('sort_order')->get();
+        $images = GalleryImage::orderBy('sort_order')->get();
         return view('admin.image.index', compact('images'));
     }
 
@@ -144,63 +145,71 @@ class AdminController extends Controller
     public function imageStore(Request $request)
     {
         $request->validate([
-            'name' => 'required',
-            'image' => 'required|image|max:2048',
+            'images' => 'required|array|min:1',
+            'images.*' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'category' => 'required',
-            'alt_text' => 'nullable'
+            'alt_text' => 'nullable',
+            'sort_order' => 'nullable|integer',
+            'is_active' => 'nullable|boolean'
         ]);
 
-        $file = $request->file('image');
-        $filename = time() . '_' . $file->getClientOriginalName();
-        $path = $file->storeAs('images', $filename, 'public');
+        $uploadedCount = 0;
+        
+        foreach ($request->file('images') as $image) {
+            $imageName = time() . '_' . $uploadedCount . '_' . $image->getClientOriginalName();
+            $image->storeAs('gallery', $imageName, 'public');
+            
+            GalleryImage::create([
+                'filename' => $imageName,
+                'alt_text' => $request->alt_text ?: 'Pointe ça Pointe gallery image',
+                'is_active' => $request->has('is_active'),
+                'sort_order' => $request->sort_order ?? GalleryImage::max('sort_order') + 1
+            ]);
+            
+            $uploadedCount++;
+        }
 
-        Image::create([
-            'name' => $request->name,
-            'filename' => $filename,
-            'path' => 'storage/' . $path,
-            'alt_text' => $request->alt_text,
-            'category' => $request->category,
-            'sort_order' => $request->sort_order ?? 0
-        ]);
-
-        return redirect()->route('admin.image.index')->with('success', 'Image ajoutée avec succès !');
+        $message = $uploadedCount === 1 ? 'Image ajoutée à la galerie !' : $uploadedCount . ' images ajoutées à la galerie !';
+        return redirect()->route('admin.image.index')->with('success', $message);
     }
 
-    public function imageEdit(Image $image)
+    public function imageEdit(GalleryImage $image)
     {
         return view('admin.image.edit', compact('image'));
     }
 
-    public function imageUpdate(Request $request, Image $image)
+    public function imageUpdate(Request $request, GalleryImage $image)
     {
         $request->validate([
             'name' => 'required',
-            'image' => 'nullable|image|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'category' => 'required',
-            'alt_text' => 'nullable'
+            'alt_text' => 'nullable',
+            'sort_order' => 'nullable|integer',
+            'is_active' => 'nullable|boolean'
         ]);
 
-        $data = $request->only(['name', 'category', 'alt_text', 'sort_order']);
+        $data = $request->only(['alt_text', 'sort_order']);
+        $data['is_active'] = $request->has('is_active');
 
         if ($request->hasFile('image')) {
             // Supprimer l'ancienne image
-            Storage::disk('public')->delete(str_replace('storage/', '', $image->path));
+            Storage::disk('public')->delete('gallery/' . $image->filename);
             
             // Ajouter la nouvelle image
             $file = $request->file('image');
             $filename = time() . '_' . $file->getClientOriginalName();
-            $path = $file->storeAs('images', $filename, 'public');
+            $file->storeAs('gallery', $filename, 'public');
             $data['filename'] = $filename;
-            $data['path'] = 'storage/' . $path;
         }
 
         $image->update($data);
         return redirect()->route('admin.image.index')->with('success', 'Image mise à jour avec succès !');
     }
 
-    public function imageDestroy(Image $image)
+    public function imageDestroy(GalleryImage $image)
     {
-        Storage::disk('public')->delete(str_replace('storage/', '', $image->path));
+        Storage::disk('public')->delete('gallery/' . $image->filename);
         $image->delete();
         return redirect()->route('admin.image.index')->with('success', 'Image supprimée avec succès !');
     }

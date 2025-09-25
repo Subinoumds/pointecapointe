@@ -13,7 +13,7 @@
                 <div class="bg-light-blue p-6 rounded-lg">
                     <h2 class="text-2xl font-bold text-primary-blue mb-4">Contenu textuel de la page d'accueil</h2>
                     <p class="text-gray-600 mb-4">Gérez les textes du site (titres, descriptions, etc.)</p>
-                    <a href="{{ route('admin.content.index') }}" class="inline-block px-6 py-3 bg-primary-blue text-white font-semibold rounded-lg hover:bg-secondary-yellow hover:text-primary-blue transition duration-300">
+                    <a href="{{ route('admin.content.index') }}" class="inline-block px-4 py-2 bg-primary-blue text-white font-medium rounded-md hover:bg-secondary-yellow hover:text-primary-blue transition duration-300 text-sm">
                         Gérer le contenu
                     </a>
                 </div>
@@ -21,15 +21,15 @@
                 <div class="bg-light-blue p-6 rounded-lg">
                     <h2 class="text-2xl font-bold text-primary-blue mb-4">Menus & Carte</h2>
                     <p class="text-gray-600 mb-4">Gérez les éléments de menu, boissons et vins</p>
-                    <a href="{{ route('admin.menu.index') }}" class="inline-block px-6 py-3 bg-primary-blue text-white font-semibold rounded-lg hover:bg-secondary-yellow hover:text-primary-blue transition duration-300">
+                    <a href="{{ route('admin.menu.index') }}" class="inline-block px-4 py-2 bg-primary-blue text-white font-medium rounded-md hover:bg-secondary-yellow hover:text-primary-blue transition duration-300 text-sm">
                         Gérer les menus
                     </a>
                 </div>
                 
                 <div class="bg-light-blue p-6 rounded-lg">
-                    <h2 class="text-2xl font-bold text-primary-blue mb-4">Images</h2>
-                    <p class="text-gray-600 mb-4">Gérez les images du site (carousel, galerie, etc.)</p>
-                    <a href="{{ route('admin.image.index') }}" class="inline-block px-6 py-3 bg-primary-blue text-white font-semibold rounded-lg hover:bg-secondary-yellow hover:text-primary-blue transition duration-300">
+                    <h2 class="text-2xl font-bold text-primary-blue mb-4">Galerie</h2>
+                    <p class="text-gray-600 mb-4">Gérez les images de la galerie</p>
+                    <a href="{{ route('admin.image.index') }}" class="inline-block px-4 py-2 bg-primary-blue text-white font-medium rounded-md hover:bg-secondary-yellow hover:text-primary-blue transition duration-300 text-sm">
                         Gérer les images
                     </a>
                 </div>
@@ -37,7 +37,7 @@
                 <div class="bg-light-blue p-6 rounded-lg">
                     <h2 class="text-2xl font-bold text-primary-blue mb-4">Événements</h2>
                     <p class="text-gray-600 mb-4">Gérez les événements et concerts</p>
-                    <a href="{{ route('admin.event.index') }}" class="inline-block px-6 py-3 bg-primary-blue text-white font-semibold rounded-lg hover:bg-secondary-yellow hover:text-primary-blue transition duration-300">
+                    <a href="{{ route('admin.event.index') }}" class="inline-block px-4 py-2 bg-primary-blue text-white font-medium rounded-md hover:bg-secondary-yellow hover:text-primary-blue transition duration-300 text-sm">
                         Gérer les événements
                     </a>
                 </div>

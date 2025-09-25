@@ -25,7 +25,8 @@ class Wine extends Model
     // Méthode pour récupérer tous les vins actifs
     public static function getActive()
     {
-        return self::where('is_active', true)
+        return self::select('id', 'name', 'image', 'glass_price', 'bottle_price', 'sort_order')
+                   ->where('is_active', true)
                    ->orderBy('sort_order')
                    ->get();
     }

@@ -23,7 +23,8 @@ class MenuItem extends Model
     // Méthode pour récupérer les items par type
     public static function getByType($type)
     {
-        return self::where('type', $type)
+        return self::select('id', 'name', 'description', 'price', 'type', 'sort_order')
+                   ->where('type', $type)
                    ->where('is_active', true)
                    ->orderBy('sort_order')
                    ->get();
