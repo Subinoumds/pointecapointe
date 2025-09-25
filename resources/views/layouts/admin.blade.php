@@ -63,6 +63,12 @@
                     <a href="{{ route('admin.event.index') }}" class="text-sm text-white hover:text-secondary-yellow transition-colors duration-300">
                         Événements
                     </a>
+                    <form action="{{ route('admin.logout') }}" method="POST" class="inline">
+                        @csrf
+                        <button type="submit" class="text-sm text-red-300 hover:text-red-100 transition-colors duration-300">
+                            Déconnexion
+                        </button>
+                    </form>
                 </div>
                 
                 <!-- Menu hamburger pour mobile -->

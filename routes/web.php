@@ -4,9 +4,7 @@ use Illuminate\Support\Facades\Route;
 
 // Page d'accueil
 Route::get('/', function () {
-    $contents = \Illuminate\Support\Facades\Cache::remember('home_contents', 300, function () {
-        return \App\Models\Content::select('key', 'content')->get()->pluck('content', 'key');
-    });
+    $contents = \App\Models\Content::select('key', 'content')->get()->pluck('content', 'key');
     return view('home', compact('contents'));
 })->name('home');
 
@@ -22,35 +20,17 @@ Route::get('/repas', function () {
 })->name('repas');
 
 Route::get('/menu', function () {
-    $entrees = \Illuminate\Support\Facades\Cache::remember('menu_entrees', 300, function () {
-        return \App\Models\MenuItem::getByType('entree');
-    });
-    $plats = \Illuminate\Support\Facades\Cache::remember('menu_plats', 300, function () {
-        return \App\Models\MenuItem::getByType('plat');
-    });
-    $burgers = \Illuminate\Support\Facades\Cache::remember('menu_burgers', 300, function () {
-        return \App\Models\MenuItem::getByType('burger');
-    });
-    $desserts = \Illuminate\Support\Facades\Cache::remember('menu_desserts', 300, function () {
-        return \App\Models\MenuItem::getByType('dessert');
-    });
-    $menuEnfant = \Illuminate\Support\Facades\Cache::remember('menu_enfant', 300, function () {
-        return \App\Models\MenuItem::getByType('menu_enfant');
-    });
+    $entrees = \App\Models\MenuItem::getByType('entree');
+    $plats = \App\Models\MenuItem::getByType('plat');
+    $burgers = \App\Models\MenuItem::getByType('burger');
+    $desserts = \App\Models\MenuItem::getByType('dessert');
+    $menuEnfant = \App\Models\MenuItem::getByType('menu_enfant');
     
-    $boissonsFraiches = \Illuminate\Support\Facades\Cache::remember('boissons_fraiches', 300, function () {
-        return \App\Models\Drink::getByCategory('boissons_fraiches');
-    });
-    $aperitifsDigestifs = \Illuminate\Support\Facades\Cache::remember('aperitifs_digestifs', 300, function () {
-        return \App\Models\Drink::getByCategory('aperitifs_digestifs');
-    });
-    $boissonsChaudes = \Illuminate\Support\Facades\Cache::remember('boissons_chaudes', 300, function () {
-        return \App\Models\Drink::getByCategory('boissons_chaudes');
-    });
+    $boissonsFraiches = \App\Models\Drink::getByCategory('boissons_fraiches');
+    $aperitifsDigestifs = \App\Models\Drink::getByCategory('aperitifs_digestifs');
+    $boissonsChaudes = \App\Models\Drink::getByCategory('boissons_chaudes');
     
-    $vins = \Illuminate\Support\Facades\Cache::remember('wines', 300, function () {
-        return \App\Models\Wine::getActive();
-    });
+    $vins = \App\Models\Wine::getActive();
     
     return view('menu', compact('entrees', 'plats', 'burgers', 'desserts', 'menuEnfant', 'boissonsFraiches', 'aperitifsDigestifs', 'boissonsChaudes', 'vins'));
 })->name('menu');
@@ -67,9 +47,7 @@ Route::get('/menus-groupe', function () {
 })->name('menus.groupe');
 
 Route::get('/galerie', function () {
-    $galleryImages = \Illuminate\Support\Facades\Cache::remember('gallery_images', 300, function () {
-        return \App\Models\GalleryImage::select('id', 'filename', 'alt_text', 'sort_order')->where('is_active', true)->orderBy('sort_order')->get();
-    });
+    $galleryImages = \App\Models\GalleryImage::select('id', 'filename', 'alt_text', 'sort_order')->where('is_active', true)->orderBy('sort_order')->get();
     return view('galerie', compact('galleryImages'));
 })->name('galerie');
 
@@ -110,8 +88,16 @@ Route::get('/menus-groupe.html', function () {
     return redirect()->route('menus.groupe');
 });
 
-// Routes d'administration
+// Routes d'authentification admin
 Route::prefix('admin')->name('admin.')->group(function () {
+    Route::get('/login', [App\Http\Controllers\AdminAuthController::class, 'showLogin'])->name('login');
+    Route::post('/login', [App\Http\Controllers\AdminAuthController::class, 'login'])->name('login');
+    Route::post('/logout', [App\Http\Controllers\AdminAuthController::class, 'logout'])->name('logout');
+    Route::post('/change-password', [App\Http\Controllers\AdminAuthController::class, 'changePassword'])->name('change-password');
+});
+
+// Routes d'administration (protégées)
+Route::prefix('admin')->name('admin.')->middleware(['admin.security'])->group(function () {
     Route::get('/', [App\Http\Controllers\AdminController::class, 'index'])->name('index');
     
     // Gestion du contenu
