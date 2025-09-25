@@ -259,7 +259,7 @@
                             @forelse($vins as $vin)
                             <div class="wine-slide min-w-full text-center">
                                 @if($vin->image)
-                                <img src="{{ asset('img/vins/' . $vin->image) }}" alt="{{ $vin->name }}" class="w-full h-80 object-contain mx-auto mb-4">
+                                <img src="{{ asset('storage/vins/' . $vin->image) }}" alt="{{ $vin->name }}" class="w-full h-80 object-contain mx-auto mb-4">
                                 @else
                                 <div class="bg-gray-200 h-80 w-full flex items-center justify-center rounded-lg mb-4">
                                     <span class="text-primary-blue text-xl font-semibold text-center p-4">Visuel à venir</span>
