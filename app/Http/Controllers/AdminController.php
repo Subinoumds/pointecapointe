@@ -6,7 +6,10 @@ use Illuminate\Http\Request;
 use App\Models\Content;
 use App\Models\Menu;
 use App\Models\Image;
+use App\Models\Event;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 
 class AdminController extends Controller
 {
@@ -15,8 +18,9 @@ class AdminController extends Controller
         $contents = Content::orderBy('title')->get();
         $menus = Menu::orderBy('name')->get();
         $images = Image::orderBy('name')->get();
+        $events = Event::orderBy('event_date', 'desc')->get();
         
-        return view('admin.index', compact('contents', 'menus', 'images'));
+        return view('admin.index', compact('contents', 'menus', 'images', 'events'));
     }
 
     // Gestion du contenu
@@ -189,5 +193,148 @@ class AdminController extends Controller
         Storage::disk('public')->delete(str_replace('storage/', '', $image->path));
         $image->delete();
         return redirect()->route('admin.image.index')->with('success', 'Image supprimée avec succès !');
+    }
+
+    // Gestion des événements
+    public function eventIndex()
+    {
+        $events = Event::orderBy('event_date', 'desc')->get();
+        return view('admin.event.index', compact('events'));
+    }
+
+    public function eventCreate()
+    {
+        return view('admin.event.create');
+    }
+
+    public function eventStore(Request $request)
+    {
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'event_date' => 'required|date',
+            'type' => 'required|in:upcoming,past',
+            'images' => 'nullable|array',
+            'images.*' => 'image|max:2048',
+            'image_paths' => 'nullable|string',
+            'is_active' => 'boolean'
+        ], [
+            'images.*.image' => 'Tous les fichiers doivent être des images.',
+            'images.*.max' => 'Chaque image ne doit pas dépasser 2MB.'
+        ]);
+
+        $data = $request->only(['title', 'description', 'event_date', 'type']);
+        $data['is_active'] = $request->has('is_active');
+        
+        // Gestion des images uploadées avec redimensionnement
+        $uploadedImages = [];
+        if ($request->hasFile('images')) {
+            $manager = new ImageManager(new Driver());
+            
+            foreach ($request->file('images') as $image) {
+                $filename = time() . '_' . uniqid() . '.jpg';
+                
+                // Redimensionner l'image (comme sur le site statique)
+                $img = $manager->read($image);
+                $img = $img->resize(800, 600, function ($constraint) {
+                    $constraint->aspectRatio();
+                    $constraint->upsize();
+                });
+                
+                $path = 'events/' . $filename;
+                Storage::disk('public')->put($path, $img->toJpeg(85));
+                $uploadedImages[] = 'storage/' . $path;
+            }
+        }
+        
+        // Gestion des chemins d'images manuels
+        $manualImages = [];
+        if ($request->image_paths) {
+            $manualImages = array_map('trim', explode(',', $request->image_paths));
+        }
+        
+        // Combiner les images uploadées et manuelles
+        $allImages = array_merge($uploadedImages, $manualImages);
+        
+        // Validation : au moins 4 images pour les événements passés
+        if ($request->type === 'past' && count($allImages) < 4) {
+            return back()->withErrors(['images' => 'Les événements passés doivent avoir au moins 4 images.'])->withInput();
+        }
+        
+        $data['images'] = $allImages;
+        
+        Event::create($data);
+        return redirect()->route('admin.event.index')->with('success', 'Événement créé avec succès !');
+    }
+
+    public function eventEdit(Event $event)
+    {
+        return view('admin.event.edit', compact('event'));
+    }
+
+    public function eventUpdate(Request $request, Event $event)
+    {
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'event_date' => 'required|date',
+            'type' => 'required|in:upcoming,past',
+            'images' => 'nullable|array',
+            'images.*' => 'image|max:2048',
+            'image_paths' => 'nullable|string',
+            'is_active' => 'boolean'
+        ], [
+            'images.*.image' => 'Tous les fichiers doivent être des images.',
+            'images.*.max' => 'Chaque image ne doit pas dépasser 2MB.'
+        ]);
+
+        $data = $request->only(['title', 'description', 'event_date', 'type']);
+        $data['is_active'] = $request->has('is_active');
+        
+        // Gestion des images uploadées avec redimensionnement
+        $uploadedImages = [];
+        if ($request->hasFile('images')) {
+            $manager = new ImageManager(new Driver());
+            
+            foreach ($request->file('images') as $image) {
+                $filename = time() . '_' . uniqid() . '.jpg';
+                
+                // Redimensionner l'image (comme sur le site statique)
+                $img = $manager->read($image);
+                $img = $img->resize(800, 600, function ($constraint) {
+                    $constraint->aspectRatio();
+                    $constraint->upsize();
+                });
+                
+                $path = 'events/' . $filename;
+                Storage::disk('public')->put($path, $img->toJpeg(85));
+                $uploadedImages[] = 'storage/' . $path;
+            }
+        }
+        
+        // Gestion des chemins d'images manuels
+        $manualImages = [];
+        if ($request->image_paths) {
+            $manualImages = array_map('trim', explode(',', $request->image_paths));
+        }
+        
+        // Combiner les images uploadées et manuelles
+        $allImages = array_merge($uploadedImages, $manualImages);
+        
+        // Validation : au moins 4 images pour les événements passés
+        if ($request->type === 'past' && count($allImages) < 4) {
+            return back()->withErrors(['images' => 'Les événements passés doivent avoir au moins 4 images.'])->withInput();
+        }
+        
+        $data['images'] = $allImages;
+        
+        $event->update($data);
+        return redirect()->route('admin.event.index')->with('success', 'Événement mis à jour avec succès !');
+    }
+
+    public function eventDestroy(Event $event)
+    {
+        $event->delete();
+        return redirect()->route('admin.event.index')->with('success', 'Événement supprimé avec succès !');
     }
 }

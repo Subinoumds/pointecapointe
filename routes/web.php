@@ -10,7 +10,9 @@ Route::get('/', function () {
 
 // Pages du site
 Route::get('/evenements', function () {
-    return view('evenements');
+    $upcomingEvents = \App\Models\Event::upcoming()->orderBy('event_date')->get();
+    $pastEvents = \App\Models\Event::past()->orderBy('event_date', 'desc')->get();
+    return view('evenements', compact('upcomingEvents', 'pastEvents'));
 })->name('evenements');
 
 Route::get('/repas', function () {
@@ -65,4 +67,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('image/{image}/edit', [App\Http\Controllers\AdminController::class, 'imageEdit'])->name('image.edit');
     Route::put('image/{image}', [App\Http\Controllers\AdminController::class, 'imageUpdate'])->name('image.update');
     Route::delete('image/{image}', [App\Http\Controllers\AdminController::class, 'imageDestroy'])->name('image.destroy');
+    
+    // Gestion des événements
+    Route::get('event', [App\Http\Controllers\AdminController::class, 'eventIndex'])->name('event.index');
+    Route::get('event/create', [App\Http\Controllers\AdminController::class, 'eventCreate'])->name('event.create');
+    Route::post('event', [App\Http\Controllers\AdminController::class, 'eventStore'])->name('event.store');
+    Route::get('event/{event}/edit', [App\Http\Controllers\AdminController::class, 'eventEdit'])->name('event.edit');
+    Route::put('event/{event}', [App\Http\Controllers\AdminController::class, 'eventUpdate'])->name('event.update');
+    Route::delete('event/{event}', [App\Http\Controllers\AdminController::class, 'eventDestroy'])->name('event.destroy');
 });
