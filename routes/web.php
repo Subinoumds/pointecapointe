@@ -40,7 +40,8 @@ Route::get('/menus-midi', function () {
 })->name('menus.midi');
 
 Route::get('/menus-groupe', function () {
-    return view('menus.groupe');
+    $groupMenus = \App\Models\GroupMenu::getActive();
+    return view('menus.groupe', compact('groupMenus'));
 })->name('menus.groupe');
 
 Route::get('/galerie', function () {
@@ -111,4 +112,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('wine/{wine}/edit', [App\Http\Controllers\AdminController::class, 'wineEdit'])->name('wine.edit');
     Route::put('wine/{wine}', [App\Http\Controllers\AdminController::class, 'wineUpdate'])->name('wine.update');
     Route::delete('wine/{wine}', [App\Http\Controllers\AdminController::class, 'wineDestroy'])->name('wine.destroy');
+    
+    // Gestion des menus de groupe
+    Route::get('group-menu', [App\Http\Controllers\AdminController::class, 'groupMenuIndex'])->name('group-menu.index');
+    Route::get('group-menu/create', [App\Http\Controllers\AdminController::class, 'groupMenuCreate'])->name('group-menu.create');
+    Route::post('group-menu', [App\Http\Controllers\AdminController::class, 'groupMenuStore'])->name('group-menu.store');
+    Route::get('group-menu/{groupMenu}/edit', [App\Http\Controllers\AdminController::class, 'groupMenuEdit'])->name('group-menu.edit');
+    Route::put('group-menu/{groupMenu}', [App\Http\Controllers\AdminController::class, 'groupMenuUpdate'])->name('group-menu.update');
+    Route::delete('group-menu/{groupMenu}', [App\Http\Controllers\AdminController::class, 'groupMenuDestroy'])->name('group-menu.destroy');
 });

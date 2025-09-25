@@ -10,6 +10,7 @@ use App\Models\Event;
 use App\Models\MenuItem;
 use App\Models\Drink;
 use App\Models\Wine;
+use App\Models\GroupMenu;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
@@ -81,7 +82,8 @@ class AdminController extends Controller
         $menuItems = MenuItem::count();
         $drinks = Drink::count();
         $wines = Wine::count();
-        return view('admin.menu.index', compact('menuItems', 'drinks', 'wines'));
+        $groupMenus = GroupMenu::count();
+        return view('admin.menu.index', compact('menuItems', 'drinks', 'wines', 'groupMenus'));
     }
 
     public function menuCreate()
@@ -540,5 +542,74 @@ class AdminController extends Controller
         }
         $wine->delete();
         return redirect()->route('admin.wine.index')->with('success', 'Vin supprimé avec succès !');
+    }
+
+    // Gestion des menus de groupe
+    public function groupMenuIndex()
+    {
+        $groupMenus = GroupMenu::orderBy('sort_order')->get();
+        return view('admin.group-menu.index', compact('groupMenus'));
+    }
+
+    public function groupMenuCreate()
+    {
+        return view('admin.group-menu.create');
+    }
+
+    public function groupMenuStore(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'price_per_person' => 'required|numeric|min:0',
+            'entrees' => 'required|array|min:1',
+            'entrees.*' => 'required|string',
+            'plats' => 'required|array|min:1',
+            'plats.*' => 'required|string',
+            'desserts' => 'required|array|min:1',
+            'desserts.*' => 'required|string',
+            'sort_order' => 'nullable|integer|min:0',
+            'is_active' => 'boolean'
+        ]);
+
+        $data = $request->all();
+        $data['is_active'] = $request->has('is_active');
+        
+        GroupMenu::create($data);
+        return redirect()->route('admin.group-menu.index')->with('success', 'Menu de groupe créé avec succès !');
+    }
+
+    public function groupMenuEdit(GroupMenu $groupMenu)
+    {
+        return view('admin.group-menu.edit', compact('groupMenu'));
+    }
+
+    public function groupMenuUpdate(Request $request, GroupMenu $groupMenu)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'price_per_person' => 'required|numeric|min:0',
+            'entrees' => 'required|array|min:1',
+            'entrees.*' => 'required|string',
+            'plats' => 'required|array|min:1',
+            'plats.*' => 'required|string',
+            'desserts' => 'required|array|min:1',
+            'desserts.*' => 'required|string',
+            'sort_order' => 'nullable|integer|min:0',
+            'is_active' => 'boolean'
+        ]);
+
+        $data = $request->all();
+        $data['is_active'] = $request->has('is_active');
+        
+        $groupMenu->update($data);
+        return redirect()->route('admin.group-menu.index')->with('success', 'Menu de groupe mis à jour avec succès !');
+    }
+
+    public function groupMenuDestroy(GroupMenu $groupMenu)
+    {
+        $groupMenu->delete();
+        return redirect()->route('admin.group-menu.index')->with('success', 'Menu de groupe supprimé avec succès !');
     }
 }

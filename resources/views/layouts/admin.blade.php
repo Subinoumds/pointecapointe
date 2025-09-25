@@ -66,5 +66,14 @@
     </nav>
 
     @yield('content')
+    
+    <!-- Scripts -->
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            feather.replace();
+        });
+    </script>
+    @yield('scripts')
 </body>
 </html>

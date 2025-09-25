@@ -14,7 +14,7 @@
                 </a>
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                 <!-- Éléments de menu -->
                 <div class="bg-light-blue p-6 rounded-lg">
                     <div class="flex items-center mb-4">
@@ -77,12 +77,33 @@
                         </a>
                     </div>
                 </div>
+
+                <!-- Menus de groupe -->
+                <div class="bg-light-blue p-6 rounded-lg">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 bg-primary-blue rounded-lg flex items-center justify-center mr-4">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                            </svg>
+                        </div>
+                        <h2 class="text-2xl font-bold text-primary-blue">Menus de groupe</h2>
+                    </div>
+                    <p class="text-gray-600 mb-4">Gérez les menus pour les repas de groupe et événements</p>
+                    <div class="space-y-2">
+                        <a href="{{ route('admin.group-menu.index') }}" class="block w-full px-4 py-2 bg-primary-blue text-white font-semibold rounded-lg hover:bg-secondary-yellow hover:text-primary-blue transition duration-300 text-center">
+                            Gérer les menus de groupe
+                        </a>
+                        <a href="{{ route('admin.group-menu.create') }}" class="block w-full px-4 py-2 bg-secondary-yellow text-primary-blue font-semibold rounded-lg hover:bg-primary-blue hover:text-white transition duration-300 text-center">
+                            + Ajouter un menu de groupe
+                        </a>
+                    </div>
+                </div>
             </div>
 
             <!-- Statistiques rapides -->
             <div class="mt-12 bg-gray-50 p-6 rounded-lg">
                 <h3 class="text-2xl font-bold text-primary-blue mb-6">Statistiques rapides</h3>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
                     <div class="text-center">
                         <div class="text-3xl font-bold text-primary-blue">{{ \App\Models\MenuItem::count() }}</div>
                         <div class="text-gray-600">Éléments de menu</div>
@@ -94,6 +115,10 @@
                     <div class="text-center">
                         <div class="text-3xl font-bold text-primary-blue">{{ \App\Models\Wine::count() }}</div>
                         <div class="text-gray-600">Vins</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-primary-blue">{{ \App\Models\GroupMenu::count() }}</div>
+                        <div class="text-gray-600">Menus de groupe</div>
                     </div>
                 </div>
             </div>
