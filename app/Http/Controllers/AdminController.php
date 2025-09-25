@@ -78,8 +78,10 @@ class AdminController extends Controller
     // Gestion des menus
     public function menuIndex()
     {
-        $menus = Menu::orderBy('type')->orderBy('sort_order')->get();
-        return view('admin.menu.index', compact('menus'));
+        $menuItems = MenuItem::count();
+        $drinks = Drink::count();
+        $wines = Wine::count();
+        return view('admin.menu.index', compact('menuItems', 'drinks', 'wines'));
     }
 
     public function menuCreate()

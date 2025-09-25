@@ -19,8 +19,8 @@
                 </div>
                 
                 <div class="bg-light-blue p-6 rounded-lg">
-                    <h2 class="text-2xl font-bold text-primary-blue mb-4">Menus</h2>
-                    <p class="text-gray-600 mb-4">Gérez les menus et cartes du restaurant</p>
+                    <h2 class="text-2xl font-bold text-primary-blue mb-4">Menus & Carte</h2>
+                    <p class="text-gray-600 mb-4">Gérez les éléments de menu, boissons et vins</p>
                     <a href="{{ route('admin.menu.index') }}" class="inline-block px-6 py-3 bg-primary-blue text-white font-semibold rounded-lg hover:bg-secondary-yellow hover:text-primary-blue transition duration-300">
                         Gérer les menus
                     </a>

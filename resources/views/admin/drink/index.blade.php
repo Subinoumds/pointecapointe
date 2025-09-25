@@ -73,7 +73,7 @@
             </div>
             
             <div class="mt-8">
-                <a href="{{ route('admin.index') }}" class="text-primary-blue hover:text-secondary-yellow">← Retour à l'administration</a>
+                <a href="{{ route('admin.menu.index') }}" class="text-primary-blue hover:text-secondary-yellow">← Retour au menu</a>
             </div>
         </div>
     </div>
