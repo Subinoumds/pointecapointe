@@ -4,12 +4,12 @@
 @section('description', 'Gérez les menus de groupe pour les repas d\'entreprise et événements')
 
 @section('content')
-<div class="min-h-screen bg-gray-100 pt-20">
-    <div class="container mx-auto max-w-7xl px-4 py-20">
-        <div class="bg-white rounded-lg shadow-lg p-8">
-            <div class="flex justify-between items-center mb-8">
-                <h1 class="text-4xl font-bold text-primary-blue">Gestion des Menus de Groupe</h1>
-                <a href="{{ route('admin.group-menu.create') }}" class="px-6 py-3 bg-secondary-yellow text-primary-blue font-semibold rounded-lg hover:bg-primary-blue hover:text-white transition duration-300">
+<div class="min-h-screen bg-gray-100 py-8">
+    <div class="container mx-auto max-w-7xl px-4 py-10 md:py-20">
+        <div class="bg-white rounded-lg shadow-lg p-4 sm:p-8">
+            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
+                <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-primary-blue">Gestion des Menus de Groupe</h1>
+                <a href="{{ route('admin.group-menu.create') }}" class="px-6 py-3 bg-secondary-yellow text-primary-blue font-semibold rounded-lg hover:bg-primary-blue hover:text-white transition duration-300 w-full sm:w-auto text-center">
                     + Ajouter un menu de groupe
                 </a>
             </div>

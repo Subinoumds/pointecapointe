@@ -5,11 +5,11 @@
 
 @section('content')
 <div class="min-h-screen bg-gray-100 py-8">
-    <div class="container mx-auto max-w-7xl px-4 py-20">
-        <div class="bg-white rounded-lg shadow-lg p-8">
-            <div class="flex justify-between items-center mb-8">
-                <h1 class="text-4xl font-bold text-primary-blue">Créer un événement</h1>
-                <a href="{{ route('admin.event.index') }}" class="text-primary-blue hover:text-secondary-yellow">
+    <div class="container mx-auto max-w-7xl px-4 py-10 md:py-20">
+        <div class="bg-white rounded-lg shadow-lg p-4 sm:p-8">
+            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
+                <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-primary-blue">Créer un événement</h1>
+                <a href="{{ route('admin.event.index') }}" class="text-primary-blue hover:text-secondary-yellow w-full sm:w-auto text-center sm:text-right">
                     ← Retour à la liste
                 </a>
             </div>
@@ -84,11 +84,11 @@
                     </label>
                 </div>
 
-                <div class="flex justify-end space-x-4">
-                    <a href="{{ route('admin.event.index') }}" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition duration-300">
+                <div class="flex flex-col-reverse sm:flex-row justify-end gap-3 sm:space-x-4">
+                    <a href="{{ route('admin.event.index') }}" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition duration-300 text-center w-full sm:w-auto">
                         Annuler
                     </a>
-                    <button type="submit" class="px-6 py-3 bg-primary-blue text-white font-semibold rounded-md hover:bg-secondary-yellow hover:text-primary-blue transition duration-300">
+                    <button type="submit" class="px-6 py-3 bg-primary-blue text-white font-semibold rounded-md hover:bg-secondary-yellow hover:text-primary-blue transition duration-300 text-center w-full sm:w-auto">
                         Créer l'événement
                     </button>
                 </div>

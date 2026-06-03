@@ -181,35 +181,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Gérer la soumission du formulaire uniquement sur le bouton 'Envoyer'
+    // Rediriger la soumission du formulaire vers le bouton 'Suivant/Envoyer'
     form.addEventListener('submit', (e) => {
         e.preventDefault();
-        const formData = new FormData(form);
-        const object = Object.fromEntries(formData);
-        const json = JSON.stringify(object);
-
-        fetch("https://api.web3forms.com/submit", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            },
-            body: json
-        })
-        .then(async (response) => {
-            let jsonResponse = await response.json();
-            if (response.status == 200) {
-                currentStep = 5;
-                updateForm();
-            } else {
-                console.log(response);
-                alert("Une erreur est survenue, veuillez réessayer.");
-            }
-        })
-        .catch(error => {
-            console.log(error);
-            alert("Une erreur est survenue, veuillez réessayer.");
-        });
+        nextBtn.click();
     });
 
     prevBtn.addEventListener("click", () => {

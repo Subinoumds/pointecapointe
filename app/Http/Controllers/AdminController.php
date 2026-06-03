@@ -904,32 +904,23 @@ class AdminController extends Controller
         // Read image
         $img = $manager->read($file->getRealPath());
         
-        // Scale if wider than $maxWidth
-        if ($img->width() > $maxWidth) {
-            $img->scale(width: $maxWidth);
-        }
+        // Do not scale or resize the image to respect the client's wish to keep original dimensions.
+        // The scale code has been removed.
         
-        // Determine extension
-        $extension = strtolower($file->getClientOriginalExtension());
-        if (!in_array($extension, ['jpg', 'jpeg', 'png', 'gif', 'webp'])) {
-            $extension = 'jpg';
-        }
-        
-        // Encode image
-        if ($extension === 'png') {
-            $encoded = $img->toPng();
-        } elseif ($extension === 'gif') {
+        // Determine target extension (convert PNG, JPEG, WebP to WebP for maximum compression, keep GIF)
+        $originalExtension = strtolower($file->getClientOriginalExtension());
+        if ($originalExtension === 'gif') {
+            $extension = 'gif';
             $encoded = $img->toGif();
-        } elseif ($extension === 'webp') {
-            $encoded = $img->toWebp($quality);
         } else {
-            $encoded = $img->toJpeg($quality);
+            $extension = 'webp';
+            $encoded = $img->toWebp($quality);
         }
         
         // Clean and generate filename
         $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
         $cleanName = preg_replace('/[^a-zA-Z0-9_\-]/', '', str_replace(' ', '_', $originalName));
-        $filename = time() . '_' . ($prefix ? $prefix . '_' : '') . $cleanName . '.' . ($extension === 'jpeg' ? 'jpg' : $extension);
+        $filename = time() . '_' . ($prefix ? $prefix . '_' : '') . $cleanName . '.' . $extension;
         
         // Store in public disk under the directory
         Storage::disk('public')->put($directory . '/' . $filename, $encoded->toString());

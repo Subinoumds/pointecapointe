@@ -4,12 +4,12 @@
 @section('description', 'Gérez les éléments de menu (entrées, plats, desserts, etc.)')
 
 @section('content')
-<div class="min-h-screen bg-gray-100 pt-20">
-    <div class="container mx-auto max-w-7xl px-4 py-20">
-        <div class="bg-white rounded-lg shadow-lg p-8">
-            <div class="flex justify-between items-center mb-8">
-                <h1 class="text-4xl font-bold text-primary-blue">Gestion des éléments de menu</h1>
-                <a href="{{ route('admin.menu-item.create') }}" class="px-6 py-3 bg-primary-blue text-white font-semibold rounded-lg hover:bg-secondary-yellow hover:text-primary-blue transition duration-300">
+<div class="min-h-screen bg-gray-100 py-8">
+    <div class="container mx-auto max-w-7xl px-4 py-10 md:py-20">
+        <div class="bg-white rounded-lg shadow-lg p-4 sm:p-8">
+            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
+                <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-primary-blue">Gestion des éléments de menu</h1>
+                <a href="{{ route('admin.menu-item.create') }}" class="px-6 py-3 bg-primary-blue text-white font-semibold rounded-lg hover:bg-secondary-yellow hover:text-primary-blue transition duration-300 w-full sm:w-auto text-center">
                     + Ajouter un élément
                 </a>
             </div>
