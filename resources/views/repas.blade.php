@@ -20,7 +20,7 @@
             <input type="hidden" name="subject" value="Nouvelle réservation de groupe">
         
             <div class="form-step">
-                <label class="block text-lg font-medium text-primary-blue mb-2">Quelle est la raison ?</label>
+                <label for="reasonSelect" class="block text-lg font-medium text-primary-blue mb-2">Quelle est la raison ?</label>
                 <select id="reasonSelect" name="raison" class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-secondary-yellow" required>
                     <option value="" disabled selected>Choisissez...</option>
                     <option value="Repas de travail">Repas de travail</option>
@@ -28,30 +28,40 @@
                     <option value="Privatisation du bistrot">Privatisation du bistrot</option>
                     <option value="Autre">Autre</option>
                 </select>
+                <label for="otherReason" class="sr-only">Précisez la raison</label>
                 <input id="otherReason" name="autre_raison" type="text" placeholder="Précisez la raison" 
                        class="w-full p-3 border rounded-xl mt-4 hidden focus:ring-2 focus:ring-secondary-yellow">
             </div>
 
             <div class="form-step hidden">
-                <label class="block text-lg font-medium text-primary-blue mb-2">Date souhaitée</label>
-                <input type="date" name="date_souhaitee" class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-secondary-yellow" required>
+                <label for="dateSelect" class="block text-lg font-medium text-primary-blue mb-2">Date souhaitée</label>
+                <input type="date" id="dateSelect" name="date_souhaitee" class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-secondary-yellow" required>
             </div>
 
             <div class="form-step hidden">
-                <label class="block text-lg font-medium text-primary-blue mb-2">Nombre de personnes</label>
-                <input type="number" name="nombre_personnes" min="2" class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-secondary-yellow" required>
+                <label for="peopleCount" class="block text-lg font-medium text-primary-blue mb-2">Nombre de personnes</label>
+                <input type="number" id="peopleCount" name="nombre_personnes" min="2" class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-secondary-yellow" required>
             </div>
 
             <div class="form-step hidden">
-                <label class="block text-lg font-medium text-primary-blue mb-2">Allergies ou demandes particulières</label>
-                <textarea name="allergies_demandes" rows="3" class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-secondary-yellow"></textarea>
+                <label for="allergiesText" class="block text-lg font-medium text-primary-blue mb-2">Allergies ou demandes particulières</label>
+                <textarea id="allergiesText" name="allergies_demandes" rows="3" class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-secondary-yellow"></textarea>
             </div>
 
             <div class="form-step hidden">
-                <label class="block text-lg font-medium text-primary-blue mb-2">Vos coordonnées</label>
-                <input type="text" name="nom_prenom" placeholder="Nom et prénom" class="w-full p-3 border rounded-xl mb-4 focus:ring-2 focus:ring-secondary-yellow" required>
-                <input type="email" name="email" placeholder="Email" class="w-full p-3 border rounded-xl mb-4 focus:ring-2 focus:ring-secondary-yellow" required>
-                <input type="tel" name="telephone" placeholder="Téléphone" class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-secondary-yellow" required>
+                <span class="block text-lg font-medium text-primary-blue mb-4">Vos coordonnées</span>
+                <div class="mb-4">
+                    <label for="nom_prenom" class="sr-only">Nom et prénom</label>
+                    <input type="text" id="nom_prenom" name="nom_prenom" placeholder="Nom et prénom" class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-secondary-yellow" required>
+                </div>
+                <div class="mb-4">
+                    <label for="email" class="sr-only">Email</label>
+                    <input type="email" id="email" name="email" placeholder="Email" class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-secondary-yellow" required>
+                </div>
+                <div>
+                    <label for="telephone" class="sr-only">Téléphone</label>
+                    <input type="tel" id="telephone" name="telephone" placeholder="Téléphone" class="w-full p-3 border rounded-xl focus:ring-2 focus:ring-secondary-yellow" required>
+                </div>
             </div>
 
             <div class="form-step hidden text-center">

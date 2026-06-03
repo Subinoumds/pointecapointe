@@ -146,7 +146,7 @@ class AdminController extends Controller
     {
         $request->validate([
             'images' => 'required|array|min:1',
-            'images.*' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'images.*' => 'required|image|mimes:jpeg,png,jpg,gif|max:10240',
             'category' => 'required',
             'alt_text' => 'nullable',
             'sort_order' => 'nullable|integer',
@@ -156,8 +156,7 @@ class AdminController extends Controller
         $uploadedCount = 0;
         
         foreach ($request->file('images') as $image) {
-            $imageName = time() . '_' . $uploadedCount . '_' . $image->getClientOriginalName();
-            $image->storeAs('gallery', $imageName, 'public');
+            $imageName = $this->optimizeAndStore($image, 'gallery', 1600, 75, $uploadedCount);
             
             GalleryImage::create([
                 'filename' => $imageName,
@@ -182,7 +181,7 @@ class AdminController extends Controller
     {
         $request->validate([
             'name' => 'required',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240',
             'category' => 'required',
             'alt_text' => 'nullable',
             'sort_order' => 'nullable|integer',
@@ -198,8 +197,7 @@ class AdminController extends Controller
             
             // Ajouter la nouvelle image
             $file = $request->file('image');
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $file->storeAs('gallery', $filename, 'public');
+            $filename = $this->optimizeAndStore($file, 'gallery', 1600, 75);
             $data['filename'] = $filename;
         }
 
@@ -234,12 +232,12 @@ class AdminController extends Controller
             'event_date' => 'required|date',
             'type' => 'required|in:upcoming,past',
             'images' => 'nullable|array',
-            'images.*' => 'image|max:2048',
+            'images.*' => 'image|max:10240',
             'image_paths' => 'nullable|string',
             'is_active' => 'boolean'
         ], [
             'images.*.image' => 'Tous les fichiers doivent être des images.',
-            'images.*.max' => 'Chaque image ne doit pas dépasser 2MB.'
+            'images.*.max' => 'Chaque image ne doit pas dépasser 10MB.'
         ]);
 
         $data = $request->only(['title', 'description', 'event_date', 'type']);
@@ -248,21 +246,9 @@ class AdminController extends Controller
         // Gestion des images uploadées avec redimensionnement
         $uploadedImages = [];
         if ($request->hasFile('images')) {
-            $manager = new ImageManager(new Driver());
-            
             foreach ($request->file('images') as $image) {
-                $filename = time() . '_' . uniqid() . '.jpg';
-                
-                // Redimensionner l'image (comme sur le site statique)
-                $img = $manager->read($image);
-                $img = $img->resize(800, 600, function ($constraint) {
-                    $constraint->aspectRatio();
-                    $constraint->upsize();
-                });
-                
-                $path = 'events/' . $filename;
-                Storage::disk('public')->put($path, $img->toJpeg(85));
-                $uploadedImages[] = 'storage/' . $path;
+                $filename = $this->optimizeAndStore($image, 'events', 800, 80, uniqid());
+                $uploadedImages[] = 'storage/events/' . $filename;
             }
         }
         
@@ -299,12 +285,12 @@ class AdminController extends Controller
             'event_date' => 'required|date',
             'type' => 'required|in:upcoming,past',
             'images' => 'nullable|array',
-            'images.*' => 'image|max:2048',
+            'images.*' => 'image|max:10240',
             'image_paths' => 'nullable|string',
             'is_active' => 'boolean'
         ], [
             'images.*.image' => 'Tous les fichiers doivent être des images.',
-            'images.*.max' => 'Chaque image ne doit pas dépasser 2MB.'
+            'images.*.max' => 'Chaque image ne doit pas dépasser 10MB.'
         ]);
 
         $data = $request->only(['title', 'description', 'event_date', 'type']);
@@ -313,21 +299,9 @@ class AdminController extends Controller
         // Gestion des images uploadées avec redimensionnement
         $uploadedImages = [];
         if ($request->hasFile('images')) {
-            $manager = new ImageManager(new Driver());
-            
             foreach ($request->file('images') as $image) {
-                $filename = time() . '_' . uniqid() . '.jpg';
-                
-                // Redimensionner l'image (comme sur le site statique)
-                $img = $manager->read($image);
-                $img = $img->resize(800, 600, function ($constraint) {
-                    $constraint->aspectRatio();
-                    $constraint->upsize();
-                });
-                
-                $path = 'events/' . $filename;
-                Storage::disk('public')->put($path, $img->toJpeg(85));
-                $uploadedImages[] = 'storage/' . $path;
+                $filename = $this->optimizeAndStore($image, 'events', 800, 80, uniqid());
+                $uploadedImages[] = 'storage/events/' . $filename;
             }
         }
         
@@ -490,7 +464,7 @@ class AdminController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'image' => 'nullable|image|max:2048',
+            'image' => 'nullable|image|max:10240',
             'glass_price' => 'required|numeric|min:0',
             'bottle_price' => 'required|numeric|min:0',
             'sort_order' => 'nullable|integer|min:0',
@@ -502,8 +476,7 @@ class AdminController extends Controller
 
         if ($request->hasFile('image')) {
             $file = $request->file('image');
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $path = $file->storeAs('vins', $filename, 'public');
+            $filename = $this->optimizeAndStore($file, 'vins', 800, 80);
             $data['image'] = $filename;
         }
         
@@ -521,7 +494,7 @@ class AdminController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'image' => 'nullable|image|max:2048',
+            'image' => 'nullable|image|max:10240',
             'glass_price' => 'required|numeric|min:0',
             'bottle_price' => 'required|numeric|min:0',
             'sort_order' => 'nullable|integer|min:0',
@@ -538,8 +511,7 @@ class AdminController extends Controller
             }
             
             $file = $request->file('image');
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $path = $file->storeAs('vins', $filename, 'public');
+            $filename = $this->optimizeAndStore($file, 'vins', 800, 80);
             $data['image'] = $filename;
         }
         
@@ -647,14 +619,13 @@ class AdminController extends Controller
     {
         $request->validate([
             'images' => 'required|array|min:1',
-            'images.*' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
+            'images.*' => 'required|image|mimes:jpeg,png,jpg,gif|max:10240'
         ]);
 
         $uploadedCount = 0;
         
         foreach ($request->file('images') as $image) {
-            $imageName = time() . '_' . $uploadedCount . '_' . $image->getClientOriginalName();
-            $image->storeAs('midday-menus', $imageName, 'public');
+            $imageName = $this->optimizeAndStore($image, 'midday-menus', 1600, 75, $uploadedCount);
             
             MiddayMenu::create([
                 'name' => 'Image ' . ($uploadedCount + 1),
@@ -680,7 +651,7 @@ class AdminController extends Controller
     public function middayMenuUpdateImage(Request $request, MiddayMenu $middayMenu)
     {
         $request->validate([
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:10240'
         ]);
 
         // Supprimer l'ancienne image
@@ -690,8 +661,7 @@ class AdminController extends Controller
 
         // Uploader la nouvelle image
         $image = $request->file('image');
-        $imageName = time() . '_' . $image->getClientOriginalName();
-        $image->storeAs('midday-menus', $imageName, 'public');
+        $imageName = $this->optimizeAndStore($image, 'midday-menus', 1600, 75);
 
         // Mettre à jour l'enregistrement
         $middayMenu->update([
@@ -707,7 +677,7 @@ class AdminController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:10240',
             'sort_order' => 'nullable|integer|min:0',
             'is_active' => 'boolean'
         ]);
@@ -718,8 +688,7 @@ class AdminController extends Controller
         // Gestion de l'upload d'image
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-            $imageName = time() . '_' . $image->getClientOriginalName();
-            $image->storeAs('midday-menus', $imageName, 'public');
+            $imageName = $this->optimizeAndStore($image, 'midday-menus', 1600, 75);
             $data['image'] = $imageName;
         }
         
@@ -738,7 +707,7 @@ class AdminController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240',
             'sort_order' => 'nullable|integer|min:0',
             'is_active' => 'boolean'
         ]);
@@ -754,8 +723,7 @@ class AdminController extends Controller
             }
             
             $image = $request->file('image');
-            $imageName = time() . '_' . $image->getClientOriginalName();
-            $image->storeAs('midday-menus', $imageName, 'public');
+            $imageName = $this->optimizeAndStore($image, 'midday-menus', 1600, 75);
             $data['image'] = $imageName;
         }
         
@@ -835,5 +803,137 @@ class AdminController extends Controller
     {
         $middayMenuCard->delete();
         return redirect()->route('admin.menu-midi.index')->with('success', 'Carte de menu supprimée avec succès !');
+    }
+
+    // Gestion du carousel de l'accueil
+    public function carouselIndex()
+    {
+        $images = Image::where('category', 'carousel')->orderBy('sort_order')->get();
+        return view('admin.carousel.index', compact('images'));
+    }
+
+    public function carouselCreate()
+    {
+        return view('admin.carousel.create');
+    }
+
+    public function carouselStore(Request $request)
+    {
+        $request->validate([
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:10240',
+            'alt_text' => 'nullable|string|max:255',
+            'sort_order' => 'nullable|integer|min:0',
+            'is_active' => 'boolean'
+        ]);
+
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $filename = $this->optimizeAndStore($file, 'carousel', 1600, 75);
+            
+            Image::create([
+                'name' => $file->getClientOriginalName(),
+                'filename' => $filename,
+                'path' => 'carousel/' . $filename,
+                'alt_text' => $request->alt_text ?: 'Pointe ça Pointe carousel image',
+                'category' => 'carousel',
+                'is_active' => $request->has('is_active'),
+                'sort_order' => $request->sort_order ?? Image::where('category', 'carousel')->max('sort_order') + 1
+            ]);
+        }
+
+        return redirect()->route('admin.carousel.index')->with('success', 'Image ajoutée au carousel !');
+    }
+
+    public function carouselEdit(Image $image)
+    {
+        return view('admin.carousel.edit', compact('image'));
+    }
+
+    public function carouselUpdate(Request $request, Image $image)
+    {
+        $request->validate([
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240',
+            'alt_text' => 'nullable|string|max:255',
+            'sort_order' => 'nullable|integer|min:0',
+            'is_active' => 'boolean'
+        ]);
+
+        $data = [
+            'alt_text' => $request->alt_text,
+            'sort_order' => $request->sort_order ?? 0,
+            'is_active' => $request->has('is_active')
+        ];
+
+        if ($request->hasFile('image')) {
+            // Delete old image
+            Storage::disk('public')->delete($image->path);
+            
+            // Save new optimized image
+            $file = $request->file('image');
+            $filename = $this->optimizeAndStore($file, 'carousel', 1600, 75);
+            $data['filename'] = $filename;
+            $data['path'] = 'carousel/' . $filename;
+            $data['name'] = $file->getClientOriginalName();
+        }
+
+        $image->update($data);
+        return redirect()->route('admin.carousel.index')->with('success', 'Image du carousel mise à jour avec succès !');
+    }
+
+    public function carouselDestroy(Image $image)
+    {
+        Storage::disk('public')->delete($image->path);
+        $image->delete();
+        return redirect()->route('admin.carousel.index')->with('success', 'Image du carousel supprimée avec succès !');
+    }
+
+    /**
+     * Optimize and store an uploaded image.
+     *
+     * @param  \Illuminate\Http\UploadedFile  $file
+     * @param  string  $directory
+     * @param  int  $maxWidth
+     * @param  int  $quality
+     * @param  string  $prefix
+     * @return string  The stored filename
+     */
+    private function optimizeAndStore($file, $directory, $maxWidth = 1600, $quality = 75, $prefix = '')
+    {
+        $manager = new ImageManager(new Driver());
+        
+        // Read image
+        $img = $manager->read($file->getRealPath());
+        
+        // Scale if wider than $maxWidth
+        if ($img->width() > $maxWidth) {
+            $img->scale(width: $maxWidth);
+        }
+        
+        // Determine extension
+        $extension = strtolower($file->getClientOriginalExtension());
+        if (!in_array($extension, ['jpg', 'jpeg', 'png', 'gif', 'webp'])) {
+            $extension = 'jpg';
+        }
+        
+        // Encode image
+        if ($extension === 'png') {
+            $encoded = $img->toPng();
+        } elseif ($extension === 'gif') {
+            $encoded = $img->toGif();
+        } elseif ($extension === 'webp') {
+            $encoded = $img->toWebp($quality);
+        } else {
+            $encoded = $img->toJpeg($quality);
+        }
+        
+        // Clean and generate filename
+        $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+        $cleanName = preg_replace('/[^a-zA-Z0-9_\-]/', '', str_replace(' ', '_', $originalName));
+        $filename = time() . '_' . ($prefix ? $prefix . '_' : '') . $cleanName . '.' . ($extension === 'jpeg' ? 'jpg' : $extension);
+        
+        // Store in public disk under the directory
+        Storage::disk('public')->put($directory . '/' . $filename, $encoded->toString());
+        
+        return $filename;
     }
 }

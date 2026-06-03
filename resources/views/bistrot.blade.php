@@ -20,7 +20,7 @@
     <div class="container mx-auto max-w-7xl px-4 relative z-20">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 items-center">
         <div class="md:col-span-1 lg:col-span-1" data-aos="fade-right">
-            <img src="{{ asset('img/galerie/DSC06121.jpg') }}" alt="Ambiance bistrot chaleureuse" class="rounded-xl shadow-lg w-full h-auto object-cover border-4 border-secondary-yellow">
+            <img src="{{ asset('img/galerie/DSC06121.jpg') }}" alt="Ambiance bistrot chaleureuse" class="rounded-xl shadow-lg w-full h-auto object-cover border-4 border-secondary-yellow" width="1600" height="1067" loading="lazy" decoding="async">
         </div>
         <div class="md:col-span-1 lg:col-span-2" data-aos="fade-left" data-aos-delay="100">
             <h2 class="text-4xl md:text-5xl font-bold text-secondary-yellow mb-6">Mais alors d'où vient le mot <br> « Bistrot » ?</h2>

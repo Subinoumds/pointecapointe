@@ -54,6 +54,9 @@
                     <a href="{{ route('admin.content.index') }}" class="text-sm text-white hover:text-secondary-yellow transition-colors duration-300">
                         Contenu de la page d'accueil
                     </a>
+                    <a href="{{ route('admin.carousel.index') }}" class="text-sm text-white hover:text-secondary-yellow transition-colors duration-300">
+                        Carousel Accueil
+                    </a>
                     <a href="{{ route('admin.menu.index') }}" class="text-sm text-white hover:text-secondary-yellow transition-colors duration-300">
                         Menus
                     </a>
@@ -87,6 +90,9 @@
                     </a>
                     <a href="{{ route('admin.content.index') }}" class="text-sm text-white hover:text-secondary-yellow transition-colors duration-300 py-2">
                         Contenu
+                    </a>
+                    <a href="{{ route('admin.carousel.index') }}" class="text-sm text-white hover:text-secondary-yellow transition-colors duration-300 py-2">
+                        Carousel Accueil
                     </a>
                     <a href="{{ route('admin.menu.index') }}" class="text-sm text-white hover:text-secondary-yellow transition-colors duration-300 py-2">
                         Menus

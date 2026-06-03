@@ -22,6 +22,12 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             ContentSeeder::class,
+            MenuSeeder::class,
+            MiddayMenuSeeder::class,
+            MiddayMenuCardSeeder::class,
+            GroupMenuSeeder::class,
+            GalleryImageSeeder::class,
+            CarouselSeeder::class,
         ]);
     }
 }

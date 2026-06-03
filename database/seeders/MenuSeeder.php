@@ -241,6 +241,35 @@ class MenuSeeder extends Seeder
             'sort_order' => 3
         ]);
 
+        // Copier les images de vins existantes vers le dossier storage
+        $sourceDir = public_path('img/vins');
+        $targetDir = storage_path('app/public/vins');
+        
+        if (!file_exists($targetDir)) {
+            mkdir($targetDir, 0755, true);
+        }
+        
+        $wineImages = [
+            'chateaudebellevue.jpg',
+            'chinon.jpg',
+            'domainedestrottieres.jpg',
+            'prieuredanus.jpg',
+            'domainepiedflond.jpg',
+            'plandedieu.jpg',
+            'chateaudebudos.jpg',
+            'chenindomainedestrottieres.jpg',
+            'domaineprieuredaunis.jpg'
+        ];
+        
+        foreach ($wineImages as $image) {
+            $sourcePath = $sourceDir . '/' . $image;
+            $targetPath = $targetDir . '/' . $image;
+            
+            if (file_exists($sourcePath)) {
+                copy($sourcePath, $targetPath);
+            }
+        }
+
         // Vins
         \App\Models\Wine::create([
             'name' => 'Savennière « Château de Bellevue »',

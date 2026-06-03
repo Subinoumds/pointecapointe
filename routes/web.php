@@ -123,6 +123,14 @@ Route::prefix('admin')->name('admin.')->middleware(['admin.security'])->group(fu
     Route::get('image/{image}/edit', [App\Http\Controllers\AdminController::class, 'imageEdit'])->name('image.edit');
     Route::put('image/{image}', [App\Http\Controllers\AdminController::class, 'imageUpdate'])->name('image.update');
     Route::delete('image/{image}', [App\Http\Controllers\AdminController::class, 'imageDestroy'])->name('image.destroy');
+
+    // Gestion du carousel de la page d'accueil
+    Route::get('carousel', [App\Http\Controllers\AdminController::class, 'carouselIndex'])->name('carousel.index');
+    Route::get('carousel/create', [App\Http\Controllers\AdminController::class, 'carouselCreate'])->name('carousel.create');
+    Route::post('carousel', [App\Http\Controllers\AdminController::class, 'carouselStore'])->name('carousel.store');
+    Route::get('carousel/{image}/edit', [App\Http\Controllers\AdminController::class, 'carouselEdit'])->name('carousel.edit');
+    Route::put('carousel/{image}', [App\Http\Controllers\AdminController::class, 'carouselUpdate'])->name('carousel.update');
+    Route::delete('carousel/{image}', [App\Http\Controllers\AdminController::class, 'carouselDestroy'])->name('carousel.destroy');
     
     // Gestion des événements
     Route::get('event', [App\Http\Controllers\AdminController::class, 'eventIndex'])->name('event.index');

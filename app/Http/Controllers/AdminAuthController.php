@@ -62,8 +62,21 @@ class AdminAuthController extends Controller
         // Écrire dans le fichier .env
         $envFile = base_path('.env');
         $envContent = file_get_contents($envFile);
-        $envContent = preg_replace('/^ADMIN_PASSWORD=.*$/m', 'ADMIN_PASSWORD=' . $newHashedPassword, $envContent);
+        
+        if (preg_match('/^ADMIN_PASSWORD=/m', $envContent)) {
+            $envContent = preg_replace('/^ADMIN_PASSWORD=.*$/m', 'ADMIN_PASSWORD=' . $newHashedPassword, $envContent);
+        } else {
+            $envContent .= PHP_EOL . 'ADMIN_PASSWORD=' . $newHashedPassword . PHP_EOL;
+        }
+        
         file_put_contents($envFile, $envContent);
+
+        // Vider le cache de configuration pour appliquer le changement immédiatement
+        try {
+            \Illuminate\Support\Facades\Artisan::call('config:clear');
+        } catch (\Exception $e) {
+            // Ignorer silencieusement si Artisan n'est pas disponible
+        }
 
         return redirect()->route('admin.index')->with('success', 'Mot de passe modifié avec succès !');
     }

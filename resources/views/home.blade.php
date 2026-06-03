@@ -3,93 +3,134 @@
 @section('title', 'Pointe ça Pointe - Bistrot sur les bords de Loire à Bouchemaine')
 @section('description', 'Découvrez Pointe ça Pointe, un bistrot décontracté sur les bords de Loire à Bouchemaine. Profitez de notre terrasse, de nos plats bistrot frais, de nos burgers maison et de notre ambiance familiale.')
 
+@push('preload')
+    @php
+        $carouselImages = \App\Models\Image::getByCategory('carousel');
+    @endphp
+    @if($carouselImages->count() > 0)
+        <link rel="preload" as="image" href="{{ asset('storage/' . $carouselImages->first()->path) }}" fetchpriority="high">
+    @else
+        <link rel="preload" as="image" href="{{ asset('img/carousel/facade1.jpg') }}" fetchpriority="high">
+    @endif
+@endpush
+
 @section('content')
+@php
+    $carouselImages = \App\Models\Image::getByCategory('carousel');
+@endphp
+
 <div class="relative h-screen overflow-hidden">
     <div class="relative h-full w-full">
-        <div class="carousel-item absolute inset-0 flex items-center justify-center bg-cover bg-center" style="background-image: url('{{ asset('img/carousel/facade1.jpg') }}');">
-            <div class="absolute inset-0 bg-black bg-opacity-40"></div>
-            <div class="relative z-10 text-center px-4" data-aos="fade-up">
-                <h1 class="text-5xl md:text-7xl font-bold text-white mb-8">{{ $contents['home_title'] ?? 'Pointe ça Pointe' }}</h1>
-                <div class="flex flex-col md:flex-row justify-center gap-6">
-                    <a href="{{ route('menu') }}" class="px-8 py-4 bg-white text-primary-blue font-semibold rounded-full shadow-lg hover:bg-gray-100 transition duration-300 transform hover:scale-105">
-                        Menu
-                    </a>
-                    <a href="{{ route('repas') }}" class="px-8 py-4 bg-transparent border-2 border-white text-white font-semibold rounded-full hover:bg-white hover:text-primary-blue transition duration-300 transform hover:scale-105">
-                        Repas de groupe
-                    </a>
+        @if($carouselImages->count() > 0)
+            @foreach($carouselImages as $index => $carouselImage)
+                <div class="carousel-item absolute inset-0 flex items-center justify-center bg-cover bg-center {{ $index > 0 ? 'opacity-0' : '' }}" style="background-image: url('{{ asset('storage/' . $carouselImage->path) }}');">
+                    <div class="absolute inset-0 bg-black/40"></div>
+                    <div class="relative z-10 text-center px-4" {!! $index === 0 ? 'data-aos="fade-up"' : '' !!}>
+                        <h1 class="text-5xl md:text-7xl font-bold text-white mb-8">{{ $contents['home_title'] ?? 'Pointe ça Pointe' }}</h1>
+                        <div class="flex flex-col md:flex-row justify-center gap-6">
+                            <a href="{{ route('menu') }}" class="px-8 py-4 bg-white text-primary-blue font-semibold rounded-full shadow-lg hover:bg-gray-100 transition duration-300 transform hover:scale-105">
+                                Menu
+                            </a>
+                            <a href="{{ route('repas') }}" class="px-8 py-4 bg-transparent border-2 border-white text-white font-semibold rounded-full hover:bg-white hover:text-primary-blue transition duration-300 transform hover:scale-105">
+                                Repas de groupe
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        @else
+            <!-- Fallback if empty -->
+            <div class="carousel-item absolute inset-0 flex items-center justify-center bg-cover bg-center" style="background-image: url('{{ asset('img/carousel/facade1.jpg') }}');">
+                <div class="absolute inset-0 bg-black/40"></div>
+                <div class="relative z-10 text-center px-4" data-aos="fade-up">
+                    <h1 class="text-5xl md:text-7xl font-bold text-white mb-8">{{ $contents['home_title'] ?? 'Pointe ça Pointe' }}</h1>
+                    <div class="flex flex-col md:flex-row justify-center gap-6">
+                        <a href="{{ route('menu') }}" class="px-8 py-4 bg-white text-primary-blue font-semibold rounded-full shadow-lg hover:bg-gray-100 transition duration-300 transform hover:scale-105">
+                            Menu
+                        </a>
+                        <a href="{{ route('repas') }}" class="px-8 py-4 bg-transparent border-2 border-white text-white font-semibold rounded-full hover:bg-white hover:text-primary-blue transition duration-300 transform hover:scale-105">
+                            Repas de groupe
+                        </a>
+                    </div>
                 </div>
             </div>
-        </div>
-        
-        <!-- Item 2 - Vue sur la Loire -->
-        <div class="carousel-item absolute inset-0 flex items-center justify-center bg-cover bg-center opacity-0" style="background-image: url('{{ asset('img/carousel/loire1.jpg') }}');">
-            <div class="absolute inset-0 bg-black bg-opacity-40"></div>
-            <div class="relative z-10 text-center px-4">
-                <h1 class="text-5xl md:text-7xl font-bold text-white mb-8">{{ $contents['home_title'] ?? 'Pointe ça Pointe' }}</h1>
-                <div class="flex flex-col md:flex-row justify-center gap-6">
-                    <a href="{{ route('menu') }}" class="px-8 py-4 bg-white text-primary-blue font-semibold rounded-full shadow-lg hover:bg-gray-100 transition duration-300 transform hover:scale-105">
-                        Menu
-                    </a>
-                    <a href="{{ route('repas') }}" class="px-8 py-4 bg-transparent border-2 border-white text-white font-semibold rounded-full hover:bg-white hover:text-primary-blue transition duration-300 transform hover:scale-105">
-                        Repas de groupe
-                    </a>
+            
+            <!-- Item 2 - Vue sur la Loire -->
+            <div class="carousel-item absolute inset-0 flex items-center justify-center bg-cover bg-center opacity-0" style="background-image: url('{{ asset('img/carousel/loire1.jpg') }}');">
+                <div class="absolute inset-0 bg-black/40"></div>
+                <div class="relative z-10 text-center px-4">
+                    <h1 class="text-5xl md:text-7xl font-bold text-white mb-8">{{ $contents['home_title'] ?? 'Pointe ça Pointe' }}</h1>
+                    <div class="flex flex-col md:flex-row justify-center gap-6">
+                        <a href="{{ route('menu') }}" class="px-8 py-4 bg-white text-primary-blue font-semibold rounded-full shadow-lg hover:bg-gray-100 transition duration-300 transform hover:scale-105">
+                            Menu
+                        </a>
+                        <a href="{{ route('repas') }}" class="px-8 py-4 bg-transparent border-2 border-white text-white font-semibold rounded-full hover:bg-white hover:text-primary-blue transition duration-300 transform hover:scale-105">
+                            Repas de groupe
+                        </a>
+                    </div>
                 </div>
             </div>
-        </div>
-        
-        <!-- Item 3 - Autre façade -->
-        <div class="carousel-item absolute inset-0 flex items-center justify-center bg-cover bg-center opacity-0" style="background-image: url('{{ asset('img/carousel/facade2.jpg') }}');">
-            <div class="absolute inset-0 bg-black bg-opacity-40"></div>
-            <div class="relative z-10 text-center px-4">
-                <h1 class="text-5xl md:text-7xl font-bold text-white mb-8">{{ $contents['home_title'] ?? 'Pointe ça Pointe' }}</h1>
-                <div class="flex flex-col md:flex-row justify-center gap-6">
-                    <a href="{{ route('menu') }}" class="px-8 py-4 bg-white text-primary-blue font-semibold rounded-full shadow-lg hover:bg-gray-100 transition duration-300 transform hover:scale-105">
-                        Menu
-                    </a>
-                    <a href="{{ route('repas') }}" class="px-8 py-4 bg-transparent border-2 border-white text-white font-semibold rounded-full hover:bg-white hover:text-primary-blue transition duration-300 transform hover:scale-105">
-                        Repas de groupe
-                    </a>
+            
+            <!-- Item 3 - Autre façade -->
+            <div class="carousel-item absolute inset-0 flex items-center justify-center bg-cover bg-center opacity-0" style="background-image: url('{{ asset('img/carousel/facade2.jpg') }}');">
+                <div class="absolute inset-0 bg-black/40"></div>
+                <div class="relative z-10 text-center px-4">
+                    <h1 class="text-5xl md:text-7xl font-bold text-white mb-8">{{ $contents['home_title'] ?? 'Pointe ça Pointe' }}</h1>
+                    <div class="flex flex-col md:flex-row justify-center gap-6">
+                        <a href="{{ route('menu') }}" class="px-8 py-4 bg-white text-primary-blue font-semibold rounded-full shadow-lg hover:bg-gray-100 transition duration-300 transform hover:scale-105">
+                            Menu
+                        </a>
+                        <a href="{{ route('repas') }}" class="px-8 py-4 bg-transparent border-2 border-white text-white font-semibold rounded-full hover:bg-white hover:text-primary-blue transition duration-300 transform hover:scale-105">
+                            Repas de groupe
+                        </a>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="carousel-item absolute inset-0 flex items-center justify-center bg-cover bg-center opacity-0" style="background-image: url('{{ asset('img/carousel/loire2.jpg') }}');">
-            <div class="absolute inset-0 bg-black bg-opacity-40"></div>
-            <div class="relative z-10 text-center px-4">
-                <h1 class="text-5xl md:text-7xl font-bold text-white mb-8">{{ $contents['home_title'] ?? 'Pointe ça Pointe' }}</h1>
-                <div class="flex flex-col md:flex-row justify-center gap-6">
-                    <a href="{{ route('menu') }}" class="px-8 py-4 bg-white text-primary-blue font-semibold rounded-full shadow-lg hover:bg-gray-100 transition duration-300 transform hover:scale-105">
-                        Menu
-                    </a>
-                    <a href="{{ route('repas') }}" class="px-8 py-4 bg-transparent border-2 border-white text-white font-semibold rounded-full hover:bg-white hover:text-primary-blue transition duration-300 transform hover:scale-105">
-                        Repas de groupe
-                    </a>
+            <div class="carousel-item absolute inset-0 flex items-center justify-center bg-cover bg-center opacity-0" style="background-image: url('{{ asset('img/carousel/loire2.jpg') }}');">
+                <div class="absolute inset-0 bg-black/40"></div>
+                <div class="relative z-10 text-center px-4">
+                    <h1 class="text-5xl md:text-7xl font-bold text-white mb-8">{{ $contents['home_title'] ?? 'Pointe ça Pointe' }}</h1>
+                    <div class="flex flex-col md:flex-row justify-center gap-6">
+                        <a href="{{ route('menu') }}" class="px-8 py-4 bg-white text-primary-blue font-semibold rounded-full shadow-lg hover:bg-gray-100 transition duration-300 transform hover:scale-105">
+                            Menu
+                        </a>
+                        <a href="{{ route('repas') }}" class="px-8 py-4 bg-transparent border-2 border-white text-white font-semibold rounded-full hover:bg-white hover:text-primary-blue transition duration-300 transform hover:scale-105">
+                            Repas de groupe
+                        </a>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="carousel-item absolute inset-0 flex items-center justify-center bg-cover bg-center opacity-0" style="background-image: url('{{ asset('img/carousel/facade3.jpg') }}');">
-            <div class="absolute inset-0 bg-black bg-opacity-40"></div>
-            <div class="relative z-10 text-center px-4">
-                <h1 class="text-5xl md:text-7xl font-bold text-white mb-8">{{ $contents['home_title'] ?? 'Pointe ça Pointe' }}</h1>
-                <div class="flex flex-col md:flex-row justify-center gap-6">
-                    <a href="{{ route('menu') }}" class="px-8 py-4 bg-white text-primary-blue font-semibold rounded-full shadow-lg hover:bg-gray-100 transition duration-300 transform hover:scale-105">
-                        Menu
-                    </a>
-                    <a href="{{ route('repas') }}" class="px-8 py-4 bg-transparent border-2 border-white text-white font-semibold rounded-full hover:bg-white hover:text-primary-blue transition duration-300 transform hover:scale-105">
-                        Repas de groupe
-                    </a>
+            <div class="carousel-item absolute inset-0 flex items-center justify-center bg-cover bg-center opacity-0" style="background-image: url('{{ asset('img/carousel/facade3.jpg') }}');">
+                <div class="absolute inset-0 bg-black/40"></div>
+                <div class="relative z-10 text-center px-4">
+                    <h1 class="text-5xl md:text-7xl font-bold text-white mb-8">{{ $contents['home_title'] ?? 'Pointe ça Pointe' }}</h1>
+                    <div class="flex flex-col md:flex-row justify-center gap-6">
+                        <a href="{{ route('menu') }}" class="px-8 py-4 bg-white text-primary-blue font-semibold rounded-full shadow-lg hover:bg-gray-100 transition duration-300 transform hover:scale-105">
+                            Menu
+                        </a>
+                        <a href="{{ route('repas') }}" class="px-8 py-4 bg-transparent border-2 border-white text-white font-semibold rounded-full hover:bg-white hover:text-primary-blue transition duration-300 transform hover:scale-105">
+                            Repas de groupe
+                        </a>
+                    </div>
                 </div>
             </div>
-        </div>
+        @endif
     </div>
     
     <div class="absolute bottom-8 left-0 right-0 flex justify-center space-x-2 z-20">
-        <button class="carousel-indicator w-3 h-3 rounded-full bg-white bg-opacity-50 hover:bg-opacity-100 transition" data-index="0"></button>
-        <button class="carousel-indicator w-3 h-3 rounded-full bg-white bg-opacity-50 hover:bg-opacity-100 transition" data-index="1"></button>
-        <button class="carousel-indicator w-3 h-3 rounded-full bg-white bg-opacity-50 hover:bg-opacity-100 transition" data-index="2"></button>
-        <button class="carousel-indicator w-3 h-3 rounded-full bg-white bg-opacity-50 hover:bg-opacity-100 transition" data-index="3"></button>
-        <button class="carousel-indicator w-3 h-3 rounded-full bg-white bg-opacity-50 hover:bg-opacity-100 transition" data-index="4"></button>
+        @if($carouselImages->count() > 0)
+            @foreach($carouselImages as $index => $carouselImage)
+                <button class="carousel-indicator w-3 h-3 rounded-full bg-white/50 hover:bg-white transition" data-index="{{ $index }}" aria-label="Diapositive {{ $index + 1 }}"></button>
+            @endforeach
+        @else
+            <button class="carousel-indicator w-3 h-3 rounded-full bg-white/50 hover:bg-white transition" data-index="0" aria-label="Diapositive 1"></button>
+            <button class="carousel-indicator w-3 h-3 rounded-full bg-white/50 hover:bg-white transition" data-index="1" aria-label="Diapositive 2"></button>
+            <button class="carousel-indicator w-3 h-3 rounded-full bg-white/50 hover:bg-white transition" data-index="2" aria-label="Diapositive 3"></button>
+            <button class="carousel-indicator w-3 h-3 rounded-full bg-white/50 hover:bg-white transition" data-index="3" aria-label="Diapositive 4"></button>
+            <button class="carousel-indicator w-3 h-3 rounded-full bg-white/50 hover:bg-white transition" data-index="4" aria-label="Diapositive 5"></button>
+        @endif
     </div>
 </div>
 
@@ -104,7 +145,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <div class="text-center p-6" data-aos="fade-up" data-aos-delay="100">
                 <div class="w-24 h-24 mx-auto mb-6 bg-light-blue rounded-full flex items-center justify-center">
-                    <i data-feather="refresh-cw" class="text-primary-blue w-12 h-12"></i>
+                    <i data-feather="refresh-cw" class="text-primary-blue w-12 h-12" aria-hidden="true"></i>
                 </div>
                 <h3 class="text-xl font-bold mb-3 text-primary-blue">Frais</h3>
                 <p class="text-gray-600">{{ $contents['commitment_fresh'] ?? 'Des produits toujours frais, préparés quotidiennement pour garantir qualité et saveur.' }}</p>
@@ -112,7 +153,7 @@
             
             <div class="text-center p-6" data-aos="fade-up" data-aos-delay="200">
                 <div class="w-24 h-24 mx-auto mb-6 bg-light-blue rounded-full flex items-center justify-center">
-                    <i data-feather="map-pin" class="text-primary-blue w-12 h-12"></i>
+                    <i data-feather="map-pin" class="text-primary-blue w-12 h-12" aria-hidden="true"></i>
                 </div>
                 <h3 class="text-xl font-bold mb-3 text-primary-blue">Local</h3>
                 <p class="text-gray-600">{{ $contents['commitment_local'] ?? 'Nous privilégions les producteurs locaux pour soutenir notre économie régionale.' }}</p>
@@ -120,7 +161,7 @@
             
             <div class="text-center p-6" data-aos="fade-up" data-aos-delay="300">
                 <div class="w-24 h-24 mx-auto mb-6 bg-light-blue rounded-full flex items-center justify-center">
-                    <i data-feather="home" class="text-primary-blue w-12 h-12"></i>
+                    <i data-feather="home" class="text-primary-blue w-12 h-12" aria-hidden="true"></i>
                 </div>
                 <h3 class="text-xl font-bold mb-3 text-primary-blue">Fait Maison</h3>
                 <p class="text-gray-600">{{ $contents['commitment_homemade'] ?? 'Toutes nos preparations sont artisanales, réalisées avec passion dans nos cuisines.' }}</p>
@@ -128,7 +169,7 @@
             
             <div class="text-center p-6" data-aos="fade-up" data-aos-delay="400">
                 <div class="w-24 h-24 mx-auto mb-6 bg-light-blue rounded-full flex items-center justify-center">
-                    <i data-feather="flag" class="text-primary-blue w-12 h-12"></i>
+                    <i data-feather="flag" class="text-primary-blue w-12 h-12" aria-hidden="true"></i>
                 </div>
                 <h3 class="text-xl font-bold mb-3 text-primary-blue">Français</h3>
                 <p class="text-gray-600">{{ $contents['commitment_french'] ?? 'Nous valorisons les produits français et le savoir-faire de nos artisans.' }}</p>
@@ -140,7 +181,7 @@
 <section class="relative bg-primary-blue py-20 text-white">
     <div class="container mx-auto max-w-7xl px-4 flex flex-col md:flex-row items-center gap-12">
         <div class="w-full md:w-1/2" data-aos="fade-right" data-aos-duration="1200">
-            <img src="{{ asset('img/galerie/DSC06123.jpg') }}" alt="Image of bistrot Pointe ça Pointe" class="rounded-xl shadow-lg w-full">
+            <img src="{{ asset('img/galerie/DSC06123.jpg') }}" alt="Image of bistrot Pointe ça Pointe" class="rounded-xl shadow-lg w-full" width="1600" height="1067" loading="lazy" decoding="async">
         </div>
         <div class="w-full md:w-1/2" data-aos="fade-left" data-aos-duration="1200">
             <h2 class="text-3xl md:text-4xl font-bold mb-6">Notre bistrot</h2>
@@ -162,11 +203,11 @@
         <div class="flex items-center justify-center mb-8">
             <span class="text-5xl font-bold text-primary-blue mr-4">4,8/5</span>
             <div class="flex space-x-1 text-secondary-yellow">
-                <i data-feather="star" class="w-8 h-8 fill-current"></i>
-                <i data-feather="star" class="w-8 h-8 fill-current"></i>
-                <i data-feather="star" class="w-8 h-8 fill-current"></i>
-                <i data-feather="star" class="w-8 h-8 fill-current"></i>
-                <i data-feather="star" class="w-8 h-8 fill-current"></i>
+                <i data-feather="star" class="w-8 h-8 fill-current" aria-hidden="true"></i>
+                <i data-feather="star" class="w-8 h-8 fill-current" aria-hidden="true"></i>
+                <i data-feather="star" class="w-8 h-8 fill-current" aria-hidden="true"></i>
+                <i data-feather="star" class="w-8 h-8 fill-current" aria-hidden="true"></i>
+                <i data-feather="star" class="w-8 h-8 fill-current" aria-hidden="true"></i>
             </div>
         </div>
         <p class="text-center text-gray-700 text-lg mb-12">

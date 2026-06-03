@@ -13,45 +13,113 @@
     <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('img/favicon-32x32.png') }}">
     <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('img/favicon-16x16.png') }}">
     <link rel="manifest" href="{{ asset('site.webmanifest') }}">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'primary-blue': '#003366',
-                        'secondary-yellow': '#fbbd08',
-                        'light-blue': '#e6f0ff',
-                    },
-                    fontFamily: {
-                        sans: ['Poppins', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
+    
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    <link href="{{ asset('style.css') }}" rel="stylesheet">
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
-    <script src="https://unpkg.com/feather-icons"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+    @stack('preload')
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js" defer></script>
+    
+    <!-- Local Business Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@@context": "https://schema.org",
+      "@@type": "Restaurant",
+      "name": "Pointe ça Pointe",
+      "image": "{{ asset('img/logo.jpg') }}",
+      "@@id": "{{ url('/') }}/#restaurant",
+      "url": "{{ url('/') }}",
+      "telephone": "+33244855536",
+      "priceRange": "$$",
+      "menu": "{{ route('menu') }}",
+      "servesCuisine": "French, Bistrot, Burgers",
+      "address": {
+        "@@type": "PostalAddress",
+        "streetAddress": "4 Pl. Ruzebouc",
+        "addressLocality": "Bouchemaine",
+        "postalCode": "49080",
+        "addressCountry": "FR"
+      },
+      "geo": {
+        "@@type": "GeoCoordinates",
+        "latitude": 47.4090721,
+        "longitude": -0.6200000
+      },
+      "openingHoursSpecification": [
+        {
+          "@@type": "OpeningHoursSpecification",
+          "dayOfWeek": "Wednesday",
+          "opens": "11:00",
+          "closes": "14:00"
+        },
+        {
+          "@@type": "OpeningHoursSpecification",
+          "dayOfWeek": "Wednesday",
+          "opens": "18:00",
+          "closes": "20:45"
+        },
+        {
+          "@@type": "OpeningHoursSpecification",
+          "dayOfWeek": "Thursday",
+          "opens": "11:00",
+          "closes": "14:00"
+        },
+        {
+          "@@type": "OpeningHoursSpecification",
+          "dayOfWeek": "Thursday",
+          "opens": "18:00",
+          "closes": "20:45"
+        },
+        {
+          "@@type": "OpeningHoursSpecification",
+          "dayOfWeek": "Friday",
+          "opens": "10:30",
+          "closes": "14:00"
+        },
+        {
+          "@@type": "OpeningHoursSpecification",
+          "dayOfWeek": "Friday",
+          "opens": "18:00",
+          "closes": "21:00"
+        },
+        {
+          "@@type": "OpeningHoursSpecification",
+          "dayOfWeek": "Saturday",
+          "opens": "10:00",
+          "closes": "21:00"
+        },
+        {
+          "@@type": "OpeningHoursSpecification",
+          "dayOfWeek": "Sunday",
+          "opens": "10:30",
+          "closes": "17:00"
+        }
+      ],
+      "sameAs": [
+        "https://www.facebook.com/PointeCaPointeBouchemaine/",
+        "https://www.instagram.com/pointecapointe49?igsh=M3BxYTdjcDN1YzF1"
+      ]
+    }
+    </script>
+    
+    @stack('styles')
 </head>
 <body class="bg-gray-100 font-sans">
     <header class="relative top-0 left-0 w-full z-30 p-4 bg-white shadow-lg rounded-b-xl">
         <nav class="container mx-auto max-w-7xl flex justify-between items-center px-4">
             <a href="{{ route('home') }}" class="flex items-center space-x-2">
-                <img src="{{ asset('img/logo.jpg') }}" alt="Logo Pointe ça Pointe" class="h-20 w-auto">
+                <img src="{{ asset('img/logo.jpg') }}" alt="Logo Pointe ça Pointe" class="h-20 w-auto" width="791" height="791">
             </a>            
             <ul class="hidden md:flex space-x-6">
                 <li><a href="{{ route('home') }}" class="font-semibold {{ request()->routeIs('home') ? 'text-secondary-yellow' : 'text-primary-blue' }} hover:text-secondary-yellow transition-colors duration-300">Accueil</a></li>
                 <li><a href="{{ route('evenements') }}" class="font-semibold {{ request()->routeIs('evenements') ? 'text-secondary-yellow' : 'text-primary-blue' }} hover:text-secondary-yellow transition-colors duration-300">Événements</a></li>
                 <li><a href="{{ route('repas') }}" class="font-semibold {{ request()->routeIs('repas') ? 'text-secondary-yellow' : 'text-primary-blue' }} hover:text-secondary-yellow transition-colors duration-300">Repas de groupe</a></li>
                 <li class="relative">
-                    <!-- Bouton principal -->
-                    <button id="menuToggle" class="flex items-center font-semibold {{ request()->routeIs('menu', 'menus.midi', 'menus.groupe') ? 'text-secondary-yellow' : 'text-primary-blue' }} hover:text-secondary-yellow transition-colors duration-300 focus:outline-none">
+                    <button id="menuToggle" class="flex items-center font-semibold {{ request()->routeIs('menu', 'menus.midi', 'menus.groupe') ? 'text-secondary-yellow' : 'text-primary-blue' }} hover:text-secondary-yellow transition-colors duration-300 focus:outline-none" aria-haspopup="true" aria-expanded="false" aria-controls="submenu">
                         Menus & Carte 
-                        <i data-feather="chevron-down" class="inline-block w-4 h-4 ml-1"></i>
+                        <i data-feather="chevron-down" class="inline-block w-4 h-4 ml-1" aria-hidden="true"></i>
                     </button>
 
                     <!-- Sous-menu -->
@@ -65,16 +133,16 @@
                 <li><a href="{{ route('bistrot') }}" class="font-semibold {{ request()->routeIs('bistrot') ? 'text-secondary-yellow' : 'text-primary-blue' }} hover:text-secondary-yellow transition-colors duration-300">Définition BISTROT</a></li>
             </ul>
 
-            <button id="mobileMenuBtn" class="md:hidden text-primary-blue p-2">
-                <i data-feather="menu" class="w-8 h-8"></i>
+            <button id="mobileMenuBtn" class="md:hidden text-primary-blue p-2" aria-label="Ouvrir le menu mobile" aria-expanded="false" aria-controls="mobileMenu">
+                <i data-feather="menu" class="w-8 h-8" aria-hidden="true"></i>
             </button>
         </nav>
     </header>
 
     <div id="mobileMenu" class="mobile-menu fixed top-0 right-0 w-64 h-full bg-white shadow-lg p-6 z-40 md:hidden">
         <div class="flex justify-end mb-8">
-            <button id="closeMenuBtn" class="text-primary-blue p-2">
-                <i data-feather="x" class="w-8 h-8"></i>
+            <button id="closeMenuBtn" class="text-primary-blue p-2" aria-label="Fermer le menu mobile" aria-controls="mobileMenu">
+                <i data-feather="x" class="w-8 h-8" aria-hidden="true"></i>
             </button>
         </div>
         <ul class="flex flex-col space-y-6">
@@ -97,31 +165,31 @@
                 <h3 class="text-2xl font-bold mb-6 text-secondary-yellow">Venez nous rencontrer : Nos horaires gourmands !</h3>
                 <ul class="space-y-2 text-lg">
                     <li class="flex items-center text-red-400 font-semibold">
-                        <i data-feather="slash" class="w-6 h-6 mr-3 flex-shrink-0 text-red-400"></i>
+                        <i data-feather="slash" class="w-6 h-6 mr-3 flex-shrink-0 text-red-400" aria-hidden="true"></i>
                         <span>Lundi: Fermé</span>
                     </li>
                     <li class="flex items-center text-red-400 font-semibold">
-                        <i data-feather="slash" class="w-6 h-6 mr-3 flex-shrink-0 text-red-400"></i>
+                        <i data-feather="slash" class="w-6 h-6 mr-3 flex-shrink-0 text-red-400" aria-hidden="true"></i>
                         <span>Mardi: Fermé</span>
                     </li>
                     <li class="flex items-center">
-                        <i data-feather="clock" class="w-6 h-6 mr-3 flex-shrink-0 text-secondary-yellow"></i>
+                        <i data-feather="clock" class="w-6 h-6 mr-3 flex-shrink-0 text-secondary-yellow" aria-hidden="true"></i>
                         <span>Mercredi: 11h00–14h00, 18h00–20h45</span>
                     </li>
                     <li class="flex items-center">
-                        <i data-feather="clock" class="w-6 h-6 mr-3 flex-shrink-0 text-secondary-yellow"></i>
+                        <i data-feather="clock" class="w-6 h-6 mr-3 flex-shrink-0 text-secondary-yellow" aria-hidden="true"></i>
                         <span>Jeudi: 11h00–14h00, 18h00–20h45</span>
                     </li>
                     <li class="flex items-center">
-                        <i data-feather="clock" class="w-6 h-6 mr-3 flex-shrink-0 text-secondary-yellow"></i>
+                        <i data-feather="clock" class="w-6 h-6 mr-3 flex-shrink-0 text-secondary-yellow" aria-hidden="true"></i>
                         <span>Vendredi: 10h30–14h00, 18h00–21h00</span>
                     </li>
                     <li class="flex items-center">
-                        <i data-feather="clock" class="w-6 h-6 mr-3 flex-shrink-0 text-secondary-yellow"></i>
+                        <i data-feather="clock" class="w-6 h-6 mr-3 flex-shrink-0 text-secondary-yellow" aria-hidden="true"></i>
                         <span>Samedi: 10h00–21h00</span>
                     </li>
                     <li class="flex items-center">
-                        <i data-feather="clock" class="w-6 h-6 mr-3 flex-shrink-0 text-secondary-yellow"></i>
+                        <i data-feather="clock" class="w-6 h-6 mr-3 flex-shrink-0 text-secondary-yellow" aria-hidden="true"></i>
                         <span>Dimanche: 10h30–17h00</span>
                     </li>
                 </ul>
@@ -131,26 +199,26 @@
                 <h3 class="text-2xl font-bold mb-6 text-secondary-yellow">Restons connectés : Votre table vous attend !</h3>
                 <ul class="space-y-4 text-lg">
                     <li class="flex items-center">
-                        <i data-feather="map-pin" class="w-6 h-6 mr-3 flex-shrink-0 text-secondary-yellow"></i>
+                        <i data-feather="map-pin" class="w-6 h-6 mr-3 flex-shrink-0 text-secondary-yellow" aria-hidden="true"></i>
                         <span>4 Pl. Ruzebouc, 49080 Bouchemaine</span>
                     </li>
                     <li class="flex items-center">
-                        <i data-feather="phone" class="w-6 h-6 mr-3 flex-shrink-0 text-secondary-yellow"></i>
+                        <i data-feather="phone" class="w-6 h-6 mr-3 flex-shrink-0 text-secondary-yellow" aria-hidden="true"></i>
                         <a href="tel:+33244855536" class="hover:underline">+33 2 44 85 55 36</a>
                     </li>
                     <li class="flex items-center">
-                        <i data-feather="mail" class="w-6 h-6 mr-3 flex-shrink-0 text-secondary-yellow"></i>
+                        <i data-feather="mail" class="w-6 h-6 mr-3 flex-shrink-0 text-secondary-yellow" aria-hidden="true"></i>
                         <a href="mailto:direction.papapoule@gmail.com" class="hover:underline">direction.papapoule@gmail.com</a>
                     </li>
                 </ul>
                 
                 <h3 class="text-2xl font-bold mb-6 mt-10 text-secondary-yellow">Suivez-nous !</h3>
                 <div class="flex space-x-6 text-white">
-                    <a href="https://www.instagram.com/pointecapointe49?igsh=M3BxYTdjcDN1YzF1" target="_blank" rel="noopener noreferrer" class="hover:text-secondary-yellow transition-colors duration-300">
-                        <i data-feather="instagram" class="w-8 h-8"></i>
+                    <a href="https://www.instagram.com/pointecapointe49?igsh=M3BxYTdjcDN1YzF1" target="_blank" rel="noopener noreferrer" class="hover:text-secondary-yellow transition-colors duration-300" aria-label="Suivez Pointe ça Pointe sur Instagram (nouvel onglet)">
+                        <i data-feather="instagram" class="w-8 h-8" aria-hidden="true"></i>
                     </a>
-                    <a href="https://www.facebook.com/PointeCaPointeBouchemaine/" target="_blank" rel="noopener noreferrer" class="hover:text-secondary-yellow transition-colors duration-300">
-                        <i data-feather="facebook" class="w-8 h-8"></i>
+                    <a href="https://www.facebook.com/PointeCaPointeBouchemaine/" target="_blank" rel="noopener noreferrer" class="hover:text-secondary-yellow transition-colors duration-300" aria-label="Suivre Pointe ça Pointe sur Facebook (nouvel onglet)">
+                        <i data-feather="facebook" class="w-8 h-8" aria-hidden="true"></i>
                     </a>
                 </div>
             </div>
@@ -171,6 +239,6 @@
             </div>
         </div>
     </footer>
-    <script src="{{ asset('script.js') }}"></script>
+    @stack('scripts')
 </body>
 </html>
