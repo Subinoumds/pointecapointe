@@ -14,6 +14,7 @@ use App\Models\Wine;
 use App\Models\GroupMenu;
 use App\Models\MiddayMenu;
 use App\Models\MiddayMenuCard;
+use App\Models\Testimonial;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
@@ -885,6 +886,67 @@ class AdminController extends Controller
         Storage::disk('public')->delete($image->path);
         $image->delete();
         return redirect()->route('admin.carousel.index')->with('success', 'Image du carousel supprimée avec succès !');
+    }
+
+    // Gestion des avis clients
+    public function testimonialIndex()
+    {
+        $testimonials = Testimonial::orderBy('sort_order')->get();
+        return view('admin.testimonial.index', compact('testimonials'));
+    }
+
+    public function testimonialCreate()
+    {
+        return view('admin.testimonial.create');
+    }
+
+    public function testimonialStore(Request $request)
+    {
+        $request->validate([
+            'client_name' => 'required|string|max:255',
+            'stars' => 'required|integer|min:1|max:5',
+            'comment' => 'required|string',
+            'sort_order' => 'required|integer',
+            'is_active' => 'sometimes|boolean'
+        ]);
+
+        $data = $request->all();
+        $data['is_active'] = $request->has('is_active');
+        $data['avatar_letter'] = mb_strtoupper(mb_substr($request->client_name, 0, 1));
+
+        Testimonial::create($data);
+
+        return redirect()->route('admin.testimonial.index')->with('success', 'Avis client créé avec succès !');
+    }
+
+    public function testimonialEdit(Testimonial $testimonial)
+    {
+        return view('admin.testimonial.edit', compact('testimonial'));
+    }
+
+    public function testimonialUpdate(Request $request, Testimonial $testimonial)
+    {
+        $request->validate([
+            'client_name' => 'required|string|max:255',
+            'stars' => 'required|integer|min:1|max:5',
+            'comment' => 'required|string',
+            'sort_order' => 'required|integer',
+            'is_active' => 'sometimes|boolean'
+        ]);
+
+        $data = $request->all();
+        $data['is_active'] = $request->has('is_active');
+        $data['avatar_letter'] = mb_strtoupper(mb_substr($request->client_name, 0, 1));
+
+        $testimonial->update($data);
+
+        return redirect()->route('admin.testimonial.index')->with('success', 'Avis client mis à jour avec succès !');
+    }
+
+    public function testimonialDestroy(Testimonial $testimonial)
+    {
+        $testimonial->delete();
+        return redirect()->route('admin.testimonial.index')->with('success', 'Avis client supprimé avec succès !');
     }
 
     /**

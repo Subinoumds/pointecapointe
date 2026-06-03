@@ -28,6 +28,7 @@ class DatabaseSeeder extends Seeder
             GroupMenuSeeder::class,
             GalleryImageSeeder::class,
             CarouselSeeder::class,
+            TestimonialSeeder::class,
         ]);
     }
 }

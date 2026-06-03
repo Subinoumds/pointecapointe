@@ -92,6 +92,21 @@
                         <i data-feather="arrow-right" class="w-4 h-4"></i>
                     </a>
                 </div>
+
+                <!-- 6. Avis Clients -->
+                <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between h-full">
+                    <div class="mb-6">
+                        <div class="w-12 h-12 bg-pink-50 rounded-2xl flex items-center justify-center text-pink-600 mb-4">
+                            <i data-feather="message-square" class="w-6 h-6"></i>
+                        </div>
+                        <h2 class="text-xl font-bold text-primary-blue mb-2">Avis Clients</h2>
+                        <p class="text-sm text-gray-600 leading-relaxed">Gérer les témoignages de vos clients affichés sur la page d'accueil (modifier la note, le texte ou ajouter/supprimer des avis).</p>
+                    </div>
+                    <a href="{{ route('admin.testimonial.index') }}" class="w-full text-center px-4 py-3 bg-primary-blue hover:bg-secondary-yellow text-white hover:text-primary-blue font-semibold rounded-xl transition duration-300 text-sm flex items-center justify-center gap-2">
+                        <span>Gérer les avis</span>
+                        <i data-feather="arrow-right" class="w-4 h-4"></i>
+                    </a>
+                </div>
             </div>
 
             <!-- Ligne de séparation et section de sécurité -->

@@ -31,7 +31,7 @@
       "image": "{{ asset('img/logo.jpg') }}",
       "@@id": "{{ url('/') }}/#restaurant",
       "url": "{{ url('/') }}",
-      "telephone": "+33244855536",
+      "telephone": "{{ str_replace([' ', '+'], '', $contents['footer_phone'] ?? '+33244855536') }}",
       "priceRange": "$$",
       "menu": "{{ route('menu') }}",
       "servesCuisine": "French, Bistrot, Burgers",
@@ -98,8 +98,8 @@
         }
       ],
       "sameAs": [
-        "https://www.facebook.com/PointeCaPointeBouchemaine/",
-        "https://www.instagram.com/pointecapointe49?igsh=M3BxYTdjcDN1YzF1"
+        "{{ $contents['social_facebook'] ?? 'https://www.facebook.com/PointeCaPointeBouchemaine/' }}",
+        "{{ $contents['social_instagram'] ?? 'https://www.instagram.com/pointecapointe49?igsh=M3BxYTdjcDN1YzF1' }}"
       ]
     }
     </script>
@@ -159,65 +159,88 @@
 
     @yield('content')
 
+    @php
+        $lundi = $contents['hours_lundi'] ?? 'Lundi: Fermé';
+        $isLundiFerme = stripos($lundi, 'Fermé') !== false;
+
+        $mardi = $contents['hours_mardi'] ?? 'Mardi: Fermé';
+        $isMardiFerme = stripos($mardi, 'Fermé') !== false;
+
+        $mercredi = $contents['hours_mercredi'] ?? 'Mercredi: 11h00–14h00, 18h00–20h45';
+        $isMercrediFerme = stripos($mercredi, 'Fermé') !== false;
+
+        $jeudi = $contents['hours_jeudi'] ?? 'Jeudi: 11h00–14h00, 18h00–20h45';
+        $isJeudiFerme = stripos($jeudi, 'Fermé') !== false;
+
+        $vendredi = $contents['hours_vendredi'] ?? 'Vendredi: 10h30–14h00, 18h00–21h00';
+        $isVendrediFerme = stripos($vendredi, 'Fermé') !== false;
+
+        $samedi = $contents['hours_samedi'] ?? 'Samedi: 10h00–21h00';
+        $isSamediFerme = stripos($samedi, 'Fermé') !== false;
+
+        $dimanche = $contents['hours_dimanche'] ?? 'Dimanche: 10h30–17h00';
+        $isDimancheFerme = stripos($dimanche, 'Fermé') !== false;
+    @endphp
+
     <footer class="bg-primary-blue text-white py-16 relative z-10">
         <div class="container mx-auto max-w-7xl px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 relative z-20">
             <div>
-                <h3 class="text-2xl font-bold mb-6 text-secondary-yellow">Venez nous rencontrer : Nos horaires gourmands !</h3>
+                <h3 class="text-2xl font-bold mb-6 text-secondary-yellow">{{ $contents['hours_title'] ?? 'Venez nous rencontrer : Nos horaires gourmands !' }}</h3>
                 <ul class="space-y-2 text-lg">
-                    <li class="flex items-center text-red-400 font-semibold">
-                        <i data-feather="slash" class="w-6 h-6 mr-3 flex-shrink-0 text-red-400" aria-hidden="true"></i>
-                        <span>Lundi: Fermé</span>
+                    <li class="flex items-center {{ $isLundiFerme ? 'text-red-400 font-semibold' : '' }}">
+                        <i data-feather="{{ $isLundiFerme ? 'slash' : 'clock' }}" class="w-6 h-6 mr-3 flex-shrink-0 {{ $isLundiFerme ? 'text-red-400' : 'text-secondary-yellow' }}" aria-hidden="true"></i>
+                        <span>{{ $lundi }}</span>
                     </li>
-                    <li class="flex items-center text-red-400 font-semibold">
-                        <i data-feather="slash" class="w-6 h-6 mr-3 flex-shrink-0 text-red-400" aria-hidden="true"></i>
-                        <span>Mardi: Fermé</span>
+                    <li class="flex items-center {{ $isMardiFerme ? 'text-red-400 font-semibold' : '' }}">
+                        <i data-feather="{{ $isMardiFerme ? 'slash' : 'clock' }}" class="w-6 h-6 mr-3 flex-shrink-0 {{ $isMardiFerme ? 'text-red-400' : 'text-secondary-yellow' }}" aria-hidden="true"></i>
+                        <span>{{ $mardi }}</span>
                     </li>
-                    <li class="flex items-center">
-                        <i data-feather="clock" class="w-6 h-6 mr-3 flex-shrink-0 text-secondary-yellow" aria-hidden="true"></i>
-                        <span>Mercredi: 11h00–14h00, 18h00–20h45</span>
+                    <li class="flex items-center {{ $isMercrediFerme ? 'text-red-400 font-semibold' : '' }}">
+                        <i data-feather="{{ $isMercrediFerme ? 'slash' : 'clock' }}" class="w-6 h-6 mr-3 flex-shrink-0 {{ $isMercrediFerme ? 'text-red-400' : 'text-secondary-yellow' }}" aria-hidden="true"></i>
+                        <span>{{ $mercredi }}</span>
                     </li>
-                    <li class="flex items-center">
-                        <i data-feather="clock" class="w-6 h-6 mr-3 flex-shrink-0 text-secondary-yellow" aria-hidden="true"></i>
-                        <span>Jeudi: 11h00–14h00, 18h00–20h45</span>
+                    <li class="flex items-center {{ $isJeudiFerme ? 'text-red-400 font-semibold' : '' }}">
+                        <i data-feather="{{ $isJeudiFerme ? 'slash' : 'clock' }}" class="w-6 h-6 mr-3 flex-shrink-0 {{ $isJeudiFerme ? 'text-red-400' : 'text-secondary-yellow' }}" aria-hidden="true"></i>
+                        <span>{{ $jeudi }}</span>
                     </li>
-                    <li class="flex items-center">
-                        <i data-feather="clock" class="w-6 h-6 mr-3 flex-shrink-0 text-secondary-yellow" aria-hidden="true"></i>
-                        <span>Vendredi: 10h30–14h00, 18h00–21h00</span>
+                    <li class="flex items-center {{ $isVendrediFerme ? 'text-red-400 font-semibold' : '' }}">
+                        <i data-feather="{{ $isVendrediFerme ? 'slash' : 'clock' }}" class="w-6 h-6 mr-3 flex-shrink-0 {{ $isVendrediFerme ? 'text-red-400' : 'text-secondary-yellow' }}" aria-hidden="true"></i>
+                        <span>{{ $vendredi }}</span>
                     </li>
-                    <li class="flex items-center">
-                        <i data-feather="clock" class="w-6 h-6 mr-3 flex-shrink-0 text-secondary-yellow" aria-hidden="true"></i>
-                        <span>Samedi: 10h00–21h00</span>
+                    <li class="flex items-center {{ $isSamediFerme ? 'text-red-400 font-semibold' : '' }}">
+                        <i data-feather="{{ $isSamediFerme ? 'slash' : 'clock' }}" class="w-6 h-6 mr-3 flex-shrink-0 {{ $isSamediFerme ? 'text-red-400' : 'text-secondary-yellow' }}" aria-hidden="true"></i>
+                        <span>{{ $samedi }}</span>
                     </li>
-                    <li class="flex items-center">
-                        <i data-feather="clock" class="w-6 h-6 mr-3 flex-shrink-0 text-secondary-yellow" aria-hidden="true"></i>
-                        <span>Dimanche: 10h30–17h00</span>
+                    <li class="flex items-center {{ $isDimancheFerme ? 'text-red-400 font-semibold' : '' }}">
+                        <i data-feather="{{ $isDimancheFerme ? 'slash' : 'clock' }}" class="w-6 h-6 mr-3 flex-shrink-0 {{ $isDimancheFerme ? 'text-red-400' : 'text-secondary-yellow' }}" aria-hidden="true"></i>
+                        <span>{{ $dimanche }}</span>
                     </li>
                 </ul>
             </div>
 
             <div>
-                <h3 class="text-2xl font-bold mb-6 text-secondary-yellow">Restons connectés : Votre table vous attend !</h3>
+                <h3 class="text-2xl font-bold mb-6 text-secondary-yellow">{{ $contents['footer_connect_title'] ?? 'Restons connectés : Votre table vous attend !' }}</h3>
                 <ul class="space-y-4 text-lg">
                     <li class="flex items-center">
                         <i data-feather="map-pin" class="w-6 h-6 mr-3 flex-shrink-0 text-secondary-yellow" aria-hidden="true"></i>
-                        <span>4 Pl. Ruzebouc, 49080 Bouchemaine</span>
+                        <span>{{ $contents['footer_address'] ?? '4 Pl. Ruzebouc, 49080 Bouchemaine' }}</span>
                     </li>
                     <li class="flex items-center">
                         <i data-feather="phone" class="w-6 h-6 mr-3 flex-shrink-0 text-secondary-yellow" aria-hidden="true"></i>
-                        <a href="tel:+33244855536" class="hover:underline">+33 2 44 85 55 36</a>
+                        <a href="tel:{{ str_replace([' ', '+'], '', $contents['footer_phone'] ?? '+33244855536') }}" class="hover:underline">{{ $contents['footer_phone'] ?? '+33 2 44 85 55 36' }}</a>
                     </li>
                     <li class="flex items-center">
                         <i data-feather="mail" class="w-6 h-6 mr-3 flex-shrink-0 text-secondary-yellow" aria-hidden="true"></i>
-                        <a href="mailto:direction.papapoule@gmail.com" class="hover:underline">direction.papapoule@gmail.com</a>
+                        <a href="mailto:{{ $contents['footer_email'] ?? 'direction.papapoule@gmail.com' }}" class="hover:underline">{{ $contents['footer_email'] ?? 'direction.papapoule@gmail.com' }}</a>
                     </li>
                 </ul>
                 
-                <h3 class="text-2xl font-bold mb-6 mt-10 text-secondary-yellow">Suivez-nous !</h3>
+                <h3 class="text-2xl font-bold mb-6 mt-10 text-secondary-yellow">{{ $contents['footer_follow_title'] ?? 'Suivez-nous !' }}</h3>
                 <div class="flex space-x-6 text-white">
-                    <a href="https://www.instagram.com/pointecapointe49?igsh=M3BxYTdjcDN1YzF1" target="_blank" rel="noopener noreferrer" class="hover:text-secondary-yellow transition-colors duration-300" aria-label="Suivez Pointe ça Pointe sur Instagram (nouvel onglet)">
+                    <a href="{{ $contents['social_instagram'] ?? 'https://www.instagram.com/pointecapointe49?igsh=M3BxYTdjcDN1YzF1' }}" target="_blank" rel="noopener noreferrer" class="hover:text-secondary-yellow transition-colors duration-300" aria-label="Suivez Pointe ça Pointe sur Instagram (nouvel onglet)">
                         <i data-feather="instagram" class="w-8 h-8" aria-hidden="true"></i>
                     </a>
-                    <a href="https://www.facebook.com/PointeCaPointeBouchemaine/" target="_blank" rel="noopener noreferrer" class="hover:text-secondary-yellow transition-colors duration-300" aria-label="Suivre Pointe ça Pointe sur Facebook (nouvel onglet)">
+                    <a href="{{ $contents['social_facebook'] ?? 'https://www.facebook.com/PointeCaPointeBouchemaine/' }}" target="_blank" rel="noopener noreferrer" class="hover:text-secondary-yellow transition-colors duration-300" aria-label="Suivre Pointe ça Pointe sur Facebook (nouvel onglet)">
                         <i data-feather="facebook" class="w-8 h-8" aria-hidden="true"></i>
                     </a>
                 </div>

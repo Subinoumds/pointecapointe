@@ -4,8 +4,8 @@ use Illuminate\Support\Facades\Route;
 
 // Page d'accueil
 Route::get('/', function () {
-    $contents = \App\Models\Content::select('key', 'content')->get()->pluck('content', 'key');
-    return view('home', compact('contents'));
+    $testimonials = \App\Models\Testimonial::getActive();
+    return view('home', compact('testimonials'));
 })->name('home');
 
 // Pages du site
@@ -139,6 +139,14 @@ Route::prefix('admin')->name('admin.')->middleware(['admin.security'])->group(fu
     Route::get('event/{event}/edit', [App\Http\Controllers\AdminController::class, 'eventEdit'])->name('event.edit');
     Route::put('event/{event}', [App\Http\Controllers\AdminController::class, 'eventUpdate'])->name('event.update');
     Route::delete('event/{event}', [App\Http\Controllers\AdminController::class, 'eventDestroy'])->name('event.destroy');
+    
+    // Gestion des avis clients
+    Route::get('testimonial', [App\Http\Controllers\AdminController::class, 'testimonialIndex'])->name('testimonial.index');
+    Route::get('testimonial/create', [App\Http\Controllers\AdminController::class, 'testimonialCreate'])->name('testimonial.create');
+    Route::post('testimonial', [App\Http\Controllers\AdminController::class, 'testimonialStore'])->name('testimonial.store');
+    Route::get('testimonial/{testimonial}/edit', [App\Http\Controllers\AdminController::class, 'testimonialEdit'])->name('testimonial.edit');
+    Route::put('testimonial/{testimonial}', [App\Http\Controllers\AdminController::class, 'testimonialUpdate'])->name('testimonial.update');
+    Route::delete('testimonial/{testimonial}', [App\Http\Controllers\AdminController::class, 'testimonialDestroy'])->name('testimonial.destroy');
     
     // Gestion des éléments de menu
     Route::get('menu-item', [App\Http\Controllers\AdminController::class, 'menuItemIndex'])->name('menu-item.index');

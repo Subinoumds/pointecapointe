@@ -19,6 +19,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        try {
+            if (\Schema::hasTable('contents')) {
+                $contents = \App\Models\Content::select('key', 'content')->get()->pluck('content', 'key');
+                \View::share('contents', $contents);
+            } else {
+                \View::share('contents', collect());
+            }
+        } catch (\Exception $e) {
+            \View::share('contents', collect());
+        }
     }
 }
