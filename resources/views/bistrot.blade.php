@@ -100,7 +100,7 @@
     <section class="bg-white text-primary-blue py-20 relative">
     <div class="container mx-auto max-w-7xl px-4 relative z-20">
         <div class="mt-20 text-center" data-aos="fade-up" data-aos-delay="300">
-        <h2 class="text-4xl md:text-5xl font-bold text-secondary-yellow mb-6">En résumé, c'est ça un Bistrot !</h2>
+        <h2 class="text-4xl md:text-5xl font-bold text-accent-gold mb-6">En résumé, c'est ça un Bistrot !</h2>
         <p class="text-xl font-bold mb-4">
             Une cuisine savoureuse au sein d'une ambiance décontractée. 
             À l'origine, un bistrot constituait le lieu de prédilection des classes populaires 

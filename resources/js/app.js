@@ -35,14 +35,36 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentIndex = 0;
     
     if (items.length > 0) {
+        // Ensure the initial item has the active class
+        items[0].classList.add('active');
+
+        // Remove onload-animate class after initial page animations finish (2 seconds)
+        setTimeout(() => {
+            const initialSlide = document.querySelector('.carousel-item.onload-animate');
+            if (initialSlide) {
+                initialSlide.classList.remove('onload-animate');
+            }
+        }, 2000);
+
         function showItem(index) {
             items.forEach((item, i) => {
-                item.style.opacity = i === index ? '1' : '0';
+                if (i === index) {
+                    item.style.opacity = '1';
+                    item.classList.add('active');
+                } else {
+                    item.style.opacity = '0';
+                    item.classList.remove('active');
+                }
             });
             
             indicators.forEach((indicator, i) => {
-                indicator.classList.toggle('bg-opacity-100', i === index);
-                indicator.classList.toggle('bg-opacity-50', i !== index);
+                if (i === index) {
+                    indicator.classList.remove('bg-white/50', 'w-3');
+                    indicator.classList.add('bg-white', 'w-6');
+                } else {
+                    indicator.classList.remove('bg-white', 'w-6');
+                    indicator.classList.add('bg-white/50', 'w-3');
+                }
             });
             
             currentIndex = index;

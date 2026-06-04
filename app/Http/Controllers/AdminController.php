@@ -131,6 +131,58 @@ class AdminController extends Controller
         return redirect()->route('admin.menu.index')->with('success', 'Menu supprimé avec succès !');
     }
 
+    public function menuPdfEdit()
+    {
+        $content = Content::firstOrCreate(
+            ['key' => 'drinks_pdf'],
+            [
+                'title' => 'Carte complète des boissons (PDF)',
+                'content' => 'boissons.pdf',
+                'type' => 'file',
+                'is_active' => true
+            ]
+        );
+        return view('admin.menu.pdf', compact('content'));
+    }
+
+    public function menuPdfUpdate(Request $request)
+    {
+        $request->validate([
+            'pdf' => 'required|file|mimes:pdf|max:10240'
+        ]);
+
+        if ($request->hasFile('pdf')) {
+            $file = $request->file('pdf');
+            $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+            $cleanName = preg_replace('/[^a-zA-Z0-9_\-]/', '', str_replace(' ', '_', $originalName));
+            $filename = time() . '_' . $cleanName . '.pdf';
+            
+            // Supprimer l'ancien fichier s'il existe et est personnalisé
+            $content = Content::where('key', 'drinks_pdf')->first();
+            if ($content && $content->content && $content->content !== 'boissons.pdf') {
+                Storage::disk('public')->delete($content->content);
+            }
+
+            // Enregistrer le nouveau fichier
+            $file->storeAs('', $filename, 'public');
+
+            // Mettre à jour la base de données
+            Content::updateOrCreate(
+                ['key' => 'drinks_pdf'],
+                [
+                    'title' => 'Carte complète des boissons (PDF)',
+                    'content' => $filename,
+                    'type' => 'file',
+                    'is_active' => true
+                ]
+            );
+
+            return redirect()->route('admin.menu.index')->with('success', 'La carte des boissons PDF a été mise à jour avec succès !');
+        }
+
+        return redirect()->back()->withErrors(['pdf' => 'Aucun fichier n\'a été reçu.']);
+    }
+
     // Gestion des images de la galerie
     public function imageIndex()
     {

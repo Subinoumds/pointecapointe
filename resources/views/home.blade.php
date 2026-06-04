@@ -19,19 +19,20 @@
     $carouselImages = \App\Models\Image::getByCategory('carousel');
 @endphp
 
-<div class="relative h-screen overflow-hidden">
+<div class="relative overflow-hidden h-[60dvh] md:h-[calc(100dvh-112px)]">
     <div class="relative h-full w-full">
         @if($carouselImages->count() > 0)
             @foreach($carouselImages as $index => $carouselImage)
-                <div class="carousel-item absolute inset-0 flex items-center justify-center bg-cover bg-center {{ $index > 0 ? 'opacity-0' : '' }}" style="background-image: url('{{ asset('storage/' . $carouselImage->path) }}');">
+                <div class="carousel-item absolute inset-0 flex items-center justify-center {{ $index > 0 ? 'opacity-0' : 'active onload-animate' }}">
+                    <img src="{{ asset('storage/' . $carouselImage->path) }}" alt="{{ $carouselImage->alt_text ?: 'Carousel image' }}" class="absolute inset-0 w-full h-full object-cover" {!! $index === 0 ? 'fetchpriority="high"' : 'fetchpriority="low" loading="lazy"' !!}>
                     <div class="absolute inset-0 bg-black/40"></div>
-                    <div class="relative z-10 text-center px-4" {!! $index === 0 ? 'data-aos="fade-up"' : '' !!}>
-                        <h1 class="text-5xl md:text-7xl font-bold text-white mb-8">{{ $contents['home_title'] ?? 'Pointe ça Pointe' }}</h1>
-                        <div class="flex flex-col md:flex-row justify-center gap-6">
-                            <a href="{{ $contents['carousel_btn1_link'] ?? route('menu') }}" class="px-8 py-4 bg-white text-primary-blue font-semibold rounded-full shadow-lg hover:bg-gray-100 transition duration-300 transform hover:scale-105">
+                    <div class="relative z-10 text-center px-4">
+                        <h1 class="text-4xl md:text-7xl font-bold text-white mb-6 md:mb-8">{{ $contents['home_title'] ?? 'Pointe ça Pointe' }}</h1>
+                        <div class="flex flex-col md:flex-row justify-center gap-4 md:gap-6">
+                            <a href="{{ $contents['carousel_btn1_link'] ?? route('menu') }}" class="px-6 py-3 md:px-8 md:py-4 bg-white text-primary-blue font-semibold rounded-full shadow-lg hover:bg-gray-100 transition duration-300 transform hover:scale-105">
                                 {{ $contents['carousel_btn1_text'] ?? 'Menu' }}
                             </a>
-                            <a href="{{ $contents['carousel_btn2_link'] ?? route('repas') }}" class="px-8 py-4 bg-transparent border-2 border-white text-white font-semibold rounded-full hover:bg-white hover:text-primary-blue transition duration-300 transform hover:scale-105">
+                            <a href="{{ $contents['carousel_btn2_link'] ?? route('repas') }}" class="px-6 py-3 md:px-8 md:py-4 bg-transparent border-2 border-white text-white font-semibold rounded-full hover:bg-white hover:text-primary-blue transition duration-300 transform hover:scale-105">
                                 {{ $contents['carousel_btn2_text'] ?? 'Repas de groupe' }}
                             </a>
                         </div>
@@ -40,15 +41,16 @@
             @endforeach
         @else
             <!-- Fallback if empty -->
-            <div class="carousel-item absolute inset-0 flex items-center justify-center bg-cover bg-center" style="background-image: url('{{ asset('img/carousel/facade1.jpg') }}');">
+            <div class="carousel-item active onload-animate absolute inset-0 flex items-center justify-center">
+                <img src="{{ asset('img/carousel/facade1.jpg') }}" alt="Façade du restaurant" class="absolute inset-0 w-full h-full object-cover" fetchpriority="high">
                 <div class="absolute inset-0 bg-black/40"></div>
-                <div class="relative z-10 text-center px-4" data-aos="fade-up">
-                    <h1 class="text-5xl md:text-7xl font-bold text-white mb-8">{{ $contents['home_title'] ?? 'Pointe ça Pointe' }}</h1>
-                    <div class="flex flex-col md:flex-row justify-center gap-6">
-                        <a href="{{ $contents['carousel_btn1_link'] ?? route('menu') }}" class="px-8 py-4 bg-white text-primary-blue font-semibold rounded-full shadow-lg hover:bg-gray-100 transition duration-300 transform hover:scale-105">
+                <div class="relative z-10 text-center px-4">
+                    <h1 class="text-4xl md:text-7xl font-bold text-white mb-6 md:mb-8">{{ $contents['home_title'] ?? 'Pointe ça Pointe' }}</h1>
+                    <div class="flex flex-col md:flex-row justify-center gap-4 md:gap-6">
+                        <a href="{{ $contents['carousel_btn1_link'] ?? route('menu') }}" class="px-6 py-3 md:px-8 md:py-4 bg-white text-primary-blue font-semibold rounded-full shadow-lg hover:bg-gray-100 transition duration-300 transform hover:scale-105">
                             {{ $contents['carousel_btn1_text'] ?? 'Menu' }}
                         </a>
-                        <a href="{{ $contents['carousel_btn2_link'] ?? route('repas') }}" class="px-8 py-4 bg-transparent border-2 border-white text-white font-semibold rounded-full hover:bg-white hover:text-primary-blue transition duration-300 transform hover:scale-105">
+                        <a href="{{ $contents['carousel_btn2_link'] ?? route('repas') }}" class="px-6 py-3 md:px-8 md:py-4 bg-transparent border-2 border-white text-white font-semibold rounded-full hover:bg-white hover:text-primary-blue transition duration-300 transform hover:scale-105">
                             {{ $contents['carousel_btn2_text'] ?? 'Repas de groupe' }}
                         </a>
                     </div>
@@ -56,15 +58,16 @@
             </div>
             
             <!-- Item 2 - Vue sur la Loire -->
-            <div class="carousel-item absolute inset-0 flex items-center justify-center bg-cover bg-center opacity-0" style="background-image: url('{{ asset('img/carousel/loire1.jpg') }}');">
+            <div class="carousel-item absolute inset-0 flex items-center justify-center opacity-0">
+                <img src="{{ asset('img/carousel/loire1.jpg') }}" alt="Vue sur la Loire" class="absolute inset-0 w-full h-full object-cover" fetchpriority="low" loading="lazy">
                 <div class="absolute inset-0 bg-black/40"></div>
                 <div class="relative z-10 text-center px-4">
-                    <h1 class="text-5xl md:text-7xl font-bold text-white mb-8">{{ $contents['home_title'] ?? 'Pointe ça Pointe' }}</h1>
-                    <div class="flex flex-col md:flex-row justify-center gap-6">
-                        <a href="{{ $contents['carousel_btn1_link'] ?? route('menu') }}" class="px-8 py-4 bg-white text-primary-blue font-semibold rounded-full shadow-lg hover:bg-gray-100 transition duration-300 transform hover:scale-105">
+                    <h1 class="text-4xl md:text-7xl font-bold text-white mb-6 md:mb-8">{{ $contents['home_title'] ?? 'Pointe ça Pointe' }}</h1>
+                    <div class="flex flex-col md:flex-row justify-center gap-4 md:gap-6">
+                        <a href="{{ $contents['carousel_btn1_link'] ?? route('menu') }}" class="px-6 py-3 md:px-8 md:py-4 bg-white text-primary-blue font-semibold rounded-full shadow-lg hover:bg-gray-100 transition duration-300 transform hover:scale-105">
                             {{ $contents['carousel_btn1_text'] ?? 'Menu' }}
                         </a>
-                        <a href="{{ $contents['carousel_btn2_link'] ?? route('repas') }}" class="px-8 py-4 bg-transparent border-2 border-white text-white font-semibold rounded-full hover:bg-white hover:text-primary-blue transition duration-300 transform hover:scale-105">
+                        <a href="{{ $contents['carousel_btn2_link'] ?? route('repas') }}" class="px-6 py-3 md:px-8 md:py-4 bg-transparent border-2 border-white text-white font-semibold rounded-full hover:bg-white hover:text-primary-blue transition duration-300 transform hover:scale-105">
                             {{ $contents['carousel_btn2_text'] ?? 'Repas de groupe' }}
                         </a>
                     </div>
@@ -72,45 +75,48 @@
             </div>
             
             <!-- Item 3 - Autre façade -->
-            <div class="carousel-item absolute inset-0 flex items-center justify-center bg-cover bg-center opacity-0" style="background-image: url('{{ asset('img/carousel/facade2.jpg') }}');">
+            <div class="carousel-item absolute inset-0 flex items-center justify-center opacity-0">
+                <img src="{{ asset('img/carousel/facade2.jpg') }}" alt="Façade du restaurant" class="absolute inset-0 w-full h-full object-cover" fetchpriority="low" loading="lazy">
                 <div class="absolute inset-0 bg-black/40"></div>
                 <div class="relative z-10 text-center px-4">
-                    <h1 class="text-5xl md:text-7xl font-bold text-white mb-8">{{ $contents['home_title'] ?? 'Pointe ça Pointe' }}</h1>
-                    <div class="flex flex-col md:flex-row justify-center gap-6">
-                        <a href="{{ $contents['carousel_btn1_link'] ?? route('menu') }}" class="px-8 py-4 bg-white text-primary-blue font-semibold rounded-full shadow-lg hover:bg-gray-100 transition duration-300 transform hover:scale-105">
+                    <h1 class="text-4xl md:text-7xl font-bold text-white mb-6 md:mb-8">{{ $contents['home_title'] ?? 'Pointe ça Pointe' }}</h1>
+                    <div class="flex flex-col md:flex-row justify-center gap-4 md:gap-6">
+                        <a href="{{ $contents['carousel_btn1_link'] ?? route('menu') }}" class="px-6 py-3 md:px-8 md:py-4 bg-white text-primary-blue font-semibold rounded-full shadow-lg hover:bg-gray-100 transition duration-300 transform hover:scale-105">
                             {{ $contents['carousel_btn1_text'] ?? 'Menu' }}
                         </a>
-                        <a href="{{ $contents['carousel_btn2_link'] ?? route('repas') }}" class="px-8 py-4 bg-transparent border-2 border-white text-white font-semibold rounded-full hover:bg-white hover:text-primary-blue transition duration-300 transform hover:scale-105">
+                        <a href="{{ $contents['carousel_btn2_link'] ?? route('repas') }}" class="px-6 py-3 md:px-8 md:py-4 bg-transparent border-2 border-white text-white font-semibold rounded-full hover:bg-white hover:text-primary-blue transition duration-300 transform hover:scale-105">
                             {{ $contents['carousel_btn2_text'] ?? 'Repas de groupe' }}
                         </a>
                     </div>
                 </div>
             </div>
 
-            <div class="carousel-item absolute inset-0 flex items-center justify-center bg-cover bg-center opacity-0" style="background-image: url('{{ asset('img/carousel/loire2.jpg') }}');">
+            <div class="carousel-item absolute inset-0 flex items-center justify-center opacity-0">
+                <img src="{{ asset('img/carousel/loire2.jpg') }}" alt="Vue sur la Loire" class="absolute inset-0 w-full h-full object-cover" fetchpriority="low" loading="lazy">
                 <div class="absolute inset-0 bg-black/40"></div>
                 <div class="relative z-10 text-center px-4">
-                    <h1 class="text-5xl md:text-7xl font-bold text-white mb-8">{{ $contents['home_title'] ?? 'Pointe ça Pointe' }}</h1>
-                    <div class="flex flex-col md:flex-row justify-center gap-6">
-                        <a href="{{ $contents['carousel_btn1_link'] ?? route('menu') }}" class="px-8 py-4 bg-white text-primary-blue font-semibold rounded-full shadow-lg hover:bg-gray-100 transition duration-300 transform hover:scale-105">
+                    <h1 class="text-4xl md:text-7xl font-bold text-white mb-6 md:mb-8">{{ $contents['home_title'] ?? 'Pointe ça Pointe' }}</h1>
+                    <div class="flex flex-col md:flex-row justify-center gap-4 md:gap-6">
+                        <a href="{{ $contents['carousel_btn1_link'] ?? route('menu') }}" class="px-6 py-3 md:px-8 md:py-4 bg-white text-primary-blue font-semibold rounded-full shadow-lg hover:bg-gray-100 transition duration-300 transform hover:scale-105">
                             {{ $contents['carousel_btn1_text'] ?? 'Menu' }}
                         </a>
-                        <a href="{{ $contents['carousel_btn2_link'] ?? route('repas') }}" class="px-8 py-4 bg-transparent border-2 border-white text-white font-semibold rounded-full hover:bg-white hover:text-primary-blue transition duration-300 transform hover:scale-105">
+                        <a href="{{ $contents['carousel_btn2_link'] ?? route('repas') }}" class="px-6 py-3 md:px-8 md:py-4 bg-transparent border-2 border-white text-white font-semibold rounded-full hover:bg-white hover:text-primary-blue transition duration-300 transform hover:scale-105">
                             {{ $contents['carousel_btn2_text'] ?? 'Repas de groupe' }}
                         </a>
                     </div>
                 </div>
             </div>
 
-            <div class="carousel-item absolute inset-0 flex items-center justify-center bg-cover bg-center opacity-0" style="background-image: url('{{ asset('img/carousel/facade3.jpg') }}');">
+            <div class="carousel-item absolute inset-0 flex items-center justify-center opacity-0">
+                <img src="{{ asset('img/carousel/facade3.jpg') }}" alt="Façade du restaurant" class="absolute inset-0 w-full h-full object-cover" fetchpriority="low" loading="lazy">
                 <div class="absolute inset-0 bg-black/40"></div>
                 <div class="relative z-10 text-center px-4">
-                    <h1 class="text-5xl md:text-7xl font-bold text-white mb-8">{{ $contents['home_title'] ?? 'Pointe ça Pointe' }}</h1>
-                    <div class="flex flex-col md:flex-row justify-center gap-6">
-                        <a href="{{ $contents['carousel_btn1_link'] ?? route('menu') }}" class="px-8 py-4 bg-white text-primary-blue font-semibold rounded-full shadow-lg hover:bg-gray-100 transition duration-300 transform hover:scale-105">
+                    <h1 class="text-4xl md:text-7xl font-bold text-white mb-6 md:mb-8">{{ $contents['home_title'] ?? 'Pointe ça Pointe' }}</h1>
+                    <div class="flex flex-col md:flex-row justify-center gap-4 md:gap-6">
+                        <a href="{{ $contents['carousel_btn1_link'] ?? route('menu') }}" class="px-6 py-3 md:px-8 md:py-4 bg-white text-primary-blue font-semibold rounded-full shadow-lg hover:bg-gray-100 transition duration-300 transform hover:scale-105">
                             {{ $contents['carousel_btn1_text'] ?? 'Menu' }}
                         </a>
-                        <a href="{{ $contents['carousel_btn2_link'] ?? route('repas') }}" class="px-8 py-4 bg-transparent border-2 border-white text-white font-semibold rounded-full hover:bg-white hover:text-primary-blue transition duration-300 transform hover:scale-105">
+                        <a href="{{ $contents['carousel_btn2_link'] ?? route('repas') }}" class="px-6 py-3 md:px-8 md:py-4 bg-transparent border-2 border-white text-white font-semibold rounded-full hover:bg-white hover:text-primary-blue transition duration-300 transform hover:scale-105">
                             {{ $contents['carousel_btn2_text'] ?? 'Repas de groupe' }}
                         </a>
                     </div>
@@ -119,17 +125,17 @@
         @endif
     </div>
     
-    <div class="absolute bottom-8 left-0 right-0 flex justify-center space-x-2 z-20">
+    <div class="absolute bottom-8 left-0 right-0 flex justify-center items-center space-x-2 z-20">
         @if($carouselImages->count() > 0)
             @foreach($carouselImages as $index => $carouselImage)
-                <button class="carousel-indicator w-3 h-3 rounded-full bg-white/50 hover:bg-white transition" data-index="{{ $index }}" aria-label="Diapositive {{ $index + 1 }}"></button>
+                <button class="carousel-indicator {{ $index === 0 ? 'bg-white w-6' : 'bg-white/50 w-3' }} h-3 rounded-full hover:bg-white transition-all duration-300" data-index="{{ $index }}" aria-label="Diapositive {{ $index + 1 }}"></button>
             @endforeach
         @else
-            <button class="carousel-indicator w-3 h-3 rounded-full bg-white/50 hover:bg-white transition" data-index="0" aria-label="Diapositive 1"></button>
-            <button class="carousel-indicator w-3 h-3 rounded-full bg-white/50 hover:bg-white transition" data-index="1" aria-label="Diapositive 2"></button>
-            <button class="carousel-indicator w-3 h-3 rounded-full bg-white/50 hover:bg-white transition" data-index="2" aria-label="Diapositive 3"></button>
-            <button class="carousel-indicator w-3 h-3 rounded-full bg-white/50 hover:bg-white transition" data-index="3" aria-label="Diapositive 4"></button>
-            <button class="carousel-indicator w-3 h-3 rounded-full bg-white/50 hover:bg-white transition" data-index="4" aria-label="Diapositive 5"></button>
+            <button class="carousel-indicator bg-white w-6 h-3 rounded-full hover:bg-white transition-all duration-300" data-index="0" aria-label="Diapositive 1"></button>
+            <button class="carousel-indicator bg-white/50 w-3 h-3 rounded-full hover:bg-white transition-all duration-300" data-index="1" aria-label="Diapositive 2"></button>
+            <button class="carousel-indicator bg-white/50 w-3 h-3 rounded-full hover:bg-white transition-all duration-300" data-index="2" aria-label="Diapositive 3"></button>
+            <button class="carousel-indicator bg-white/50 w-3 h-3 rounded-full hover:bg-white transition-all duration-300" data-index="3" aria-label="Diapositive 4"></button>
+            <button class="carousel-indicator bg-white/50 w-3 h-3 rounded-full hover:bg-white transition-all duration-300" data-index="4" aria-label="Diapositive 5"></button>
         @endif
     </div>
 </div>
@@ -178,7 +184,7 @@
     </div>
 </section>
 
-<section class="relative bg-primary-blue py-20 text-white">
+<section class="relative bg-primary-blue py-20 text-white overflow-hidden">
     <div class="container mx-auto max-w-7xl px-4 flex flex-col md:flex-row items-center gap-12">
         <div class="w-full md:w-1/2" data-aos="fade-right" data-aos-duration="1200">
             <img src="{{ asset('img/galerie/DSC06123.jpg') }}" alt="Image of bistrot Pointe ça Pointe" class="rounded-xl shadow-lg w-full" width="1600" height="1067" loading="lazy" decoding="async">
@@ -207,7 +213,7 @@
         @endphp
         <div class="flex items-center justify-center mb-8">
             <span class="text-5xl font-bold text-primary-blue mr-4">{{ $ratingValStr }}</span>
-            <div class="flex space-x-1 text-secondary-yellow">
+            <div class="flex space-x-1 text-accent-gold">
                 @for($i = 1; $i <= 5; $i++)
                     <i data-feather="star" class="w-8 h-8 {{ $i <= $roundedRating ? 'fill-current' : '' }}" aria-hidden="true"></i>
                 @endfor
@@ -226,7 +232,7 @@
                     </div>
                     <div class="ml-4">
                         <p class="font-semibold text-primary-blue">{{ $testimonial->client_name }}</p>
-                        <div class="text-sm text-secondary-yellow flex">
+                        <div class="text-sm text-accent-gold flex">
                             @for($i = 1; $i <= 5; $i++)
                                 <span class="mr-0.5">{{ $i <= $testimonial->stars ? '★' : '☆' }}</span>
                             @endfor

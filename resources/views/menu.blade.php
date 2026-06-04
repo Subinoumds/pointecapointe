@@ -116,7 +116,7 @@
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12" data-aos="fade-up" data-aos-delay="100">
                 <div class="lg:col-span-1">
-                    <h3 class="text-3xl font-bold text-secondary-yellow mb-6 border-b-2 border-secondary-yellow pb-2">Les Vins</h3>
+                    <h3 class="text-3xl font-bold text-accent-gold mb-6 border-b-2 border-accent-gold pb-2">Les Vins</h3>
                     <div id="wine-carousel" class="relative overflow-hidden w-full h-auto">
                         <div class="wine-slides-container flex transition-transform duration-700 ease-in-out">
                             @forelse($vins as $vin)
@@ -150,7 +150,7 @@
                 </div>
 
                 <div class="lg:col-span-1">
-                    <h3 class="text-3xl font-bold text-secondary-yellow mb-6 border-b-2 border-secondary-yellow pb-2">Les Boissons</h3>
+                    <h3 class="text-3xl font-bold text-accent-gold mb-6 border-b-2 border-accent-gold pb-2">Les Boissons</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div>
                             <h4 class="text-xl font-semibold text-primary-blue mb-2">Boissons fraîches</h4>
@@ -182,7 +182,7 @@
                         </div>
                     </div>
                     <div class="mt-8 text-center" data-aos="fade-up" data-aos-delay="200">
-                        <a href="{{ asset('boissons.pdf') }}" target="_blank" rel="noopener noreferrer" class="px-8 py-4 inline-block bg-primary-blue text-white font-semibold rounded-full shadow-lg hover:bg-secondary-yellow hover:text-primary-blue transition duration-300 transform hover:scale-105">
+                        <a href="{{ (isset($contents['drinks_pdf']) && $contents['drinks_pdf'] !== 'boissons.pdf') ? asset('storage/' . $contents['drinks_pdf']) : asset('boissons.pdf') }}" target="_blank" rel="noopener noreferrer" class="px-8 py-4 inline-block bg-primary-blue text-white font-semibold rounded-full shadow-lg hover:bg-secondary-yellow hover:text-primary-blue transition duration-300 transform hover:scale-105">
                             Télécharger notre carte complète des boissons
                         </a>
                     </div>

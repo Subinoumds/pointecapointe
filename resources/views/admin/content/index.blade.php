@@ -36,7 +36,8 @@
                 'hours_title', 'hours_lundi', 'hours_mardi', 'hours_mercredi', 'hours_jeudi', 'hours_vendredi', 'hours_samedi', 'hours_dimanche',
                 'footer_connect_title', 'footer_address', 'footer_phone', 'footer_email',
                 'footer_follow_title', 'social_instagram', 'social_facebook',
-                'carousel_btn1_text', 'carousel_btn1_link', 'carousel_btn2_text', 'carousel_btn2_link'
+                'carousel_btn1_text', 'carousel_btn1_link', 'carousel_btn2_text', 'carousel_btn2_link',
+                'drinks_pdf'
             ];
 
             $homeTitle = $contents->firstWhere('key', 'home_title');

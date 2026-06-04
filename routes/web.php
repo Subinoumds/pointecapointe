@@ -10,8 +10,8 @@ Route::get('/', function () {
 
 // Pages du site
 Route::get('/evenements', function () {
-    $upcomingEvents = \App\Models\Event::upcoming()->select('id', 'title', 'description', 'event_date', 'image')->orderBy('event_date')->get();
-    $pastEvents = \App\Models\Event::past()->select('id', 'title', 'description', 'event_date', 'image')->orderBy('event_date', 'desc')->get();
+    $upcomingEvents = \App\Models\Event::upcoming()->select('id', 'title', 'description', 'event_date', 'images')->orderBy('event_date')->get();
+    $pastEvents = \App\Models\Event::past()->select('id', 'title', 'description', 'event_date', 'images')->orderBy('event_date', 'desc')->get();
     return view('evenements', compact('upcomingEvents', 'pastEvents'));
 })->name('evenements');
 
@@ -112,6 +112,8 @@ Route::prefix('admin')->name('admin.')->middleware(['admin.security'])->group(fu
     Route::get('menu', [App\Http\Controllers\AdminController::class, 'menuIndex'])->name('menu.index');
     Route::get('menu/create', [App\Http\Controllers\AdminController::class, 'menuCreate'])->name('menu.create');
     Route::post('menu', [App\Http\Controllers\AdminController::class, 'menuStore'])->name('menu.store');
+    Route::get('menu/pdf', [App\Http\Controllers\AdminController::class, 'menuPdfEdit'])->name('menu.pdf.edit');
+    Route::put('menu/pdf', [App\Http\Controllers\AdminController::class, 'menuPdfUpdate'])->name('menu.pdf.update');
     Route::get('menu/{menu}/edit', [App\Http\Controllers\AdminController::class, 'menuEdit'])->name('menu.edit');
     Route::put('menu/{menu}', [App\Http\Controllers\AdminController::class, 'menuUpdate'])->name('menu.update');
     Route::delete('menu/{menu}', [App\Http\Controllers\AdminController::class, 'menuDestroy'])->name('menu.destroy');

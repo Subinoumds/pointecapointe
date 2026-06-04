@@ -251,6 +251,13 @@ class ContentSeeder extends Seeder
                 'content' => '/repas',
                 'type' => 'text',
                 'is_active' => true
+            ],
+            [
+                'key' => 'drinks_pdf',
+                'title' => 'Carte complète des boissons (PDF)',
+                'content' => 'boissons.pdf',
+                'type' => 'file',
+                'is_active' => true
             ]
         ];
 

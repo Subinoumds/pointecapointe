@@ -10,6 +10,7 @@
     --color-primary-blue: #003366;
     --color-secondary-yellow: #fbbd08;
     --color-light-blue: #e6f0ff;
+    --color-accent-gold: #b87a00;
 }
 
 /* Custom Styles (previously in public/style.css) */
@@ -66,3 +67,53 @@
 .mobile-menu.open {
     transform: translateX(0);
 }
+
+/* Global Reset to prevent mobile zoom and horizontal scroll */
+body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+}
+
+/* Animations de chargement et d'affichage du Hero Carousel (au chargement uniquement) */
+.carousel-item.onload-animate h1,
+.carousel-item.onload-animate a {
+    opacity: 0;
+}
+
+.carousel-item.onload-animate h1 {
+    animation: slideUp 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+.carousel-item.onload-animate a:nth-child(1) {
+    animation: slideUpButtons 1s cubic-bezier(0.25, 1, 0.5, 1) 0.2s forwards;
+}
+
+.carousel-item.onload-animate a:nth-child(2) {
+    animation: slideUpButtons 1s cubic-bezier(0.25, 1, 0.5, 1) 0.35s forwards;
+}
+
+@keyframes slideUp {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideUpButtons {
+    0% {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
