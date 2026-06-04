@@ -11,6 +11,42 @@
     --color-secondary-yellow: #fbbd08;
     --color-light-blue: #e6f0ff;
     --color-accent-gold: #b87a00;
+    --color-accent-red: #ff8080;
+}
+
+/* Styling carousel indicators for accessibility target size */
+.carousel-indicator {
+    position: relative;
+    width: 32px !important;
+    height: 32px !important;
+    background: transparent !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+/* We draw the actual visible dot using a pseudo-element */
+.carousel-indicator::before {
+    content: '';
+    display: block;
+    height: 12px !important; /* h-3 equivalent */
+    border-radius: 9999px;
+    transition: all 0.3s ease;
+}
+
+/* When the indicator has bg-white/50 (inactive), draw a small semi-transparent dot */
+.carousel-indicator.bg-white\/50::before {
+    background-color: rgba(255, 255, 255, 0.5) !important;
+    width: 12px !important; /* w-3 equivalent */
+}
+
+/* When the indicator has bg-white (active), draw a wider dot */
+.carousel-indicator.bg-white::before {
+    background-color: rgb(255, 255, 255) !important;
+    width: 24px !important; /* w-6 equivalent */
 }
 
 /* Custom Styles (previously in public/style.css) */

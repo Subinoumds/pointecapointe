@@ -157,7 +157,9 @@
         </ul>
     </div>
 
-    @yield('content')
+    <main id="main-content">
+        @yield('content')
+    </main>
 
     @php
         $lundi = $contents['hours_lundi'] ?? 'Lundi: Fermé';
@@ -187,32 +189,32 @@
             <div>
                 <h3 class="text-2xl font-bold mb-6 text-secondary-yellow">{{ $contents['hours_title'] ?? 'Venez nous rencontrer : Nos horaires gourmands !' }}</h3>
                 <ul class="space-y-2 text-lg">
-                    <li class="flex items-center {{ $isLundiFerme ? 'text-red-400 font-semibold' : '' }}">
-                        <i data-feather="{{ $isLundiFerme ? 'slash' : 'clock' }}" class="w-6 h-6 mr-3 flex-shrink-0 {{ $isLundiFerme ? 'text-red-400' : 'text-secondary-yellow' }}" aria-hidden="true"></i>
+                    <li class="flex items-center {{ $isLundiFerme ? 'text-accent-red font-semibold' : '' }}">
+                        <i data-feather="{{ $isLundiFerme ? 'slash' : 'clock' }}" class="w-6 h-6 mr-3 flex-shrink-0 {{ $isLundiFerme ? 'text-accent-red' : 'text-secondary-yellow' }}" aria-hidden="true"></i>
                         <span>{{ $lundi }}</span>
                     </li>
-                    <li class="flex items-center {{ $isMardiFerme ? 'text-red-400 font-semibold' : '' }}">
-                        <i data-feather="{{ $isMardiFerme ? 'slash' : 'clock' }}" class="w-6 h-6 mr-3 flex-shrink-0 {{ $isMardiFerme ? 'text-red-400' : 'text-secondary-yellow' }}" aria-hidden="true"></i>
+                    <li class="flex items-center {{ $isMardiFerme ? 'text-accent-red font-semibold' : '' }}">
+                        <i data-feather="{{ $isMardiFerme ? 'slash' : 'clock' }}" class="w-6 h-6 mr-3 flex-shrink-0 {{ $isMardiFerme ? 'text-accent-red' : 'text-secondary-yellow' }}" aria-hidden="true"></i>
                         <span>{{ $mardi }}</span>
                     </li>
-                    <li class="flex items-center {{ $isMercrediFerme ? 'text-red-400 font-semibold' : '' }}">
-                        <i data-feather="{{ $isMercrediFerme ? 'slash' : 'clock' }}" class="w-6 h-6 mr-3 flex-shrink-0 {{ $isMercrediFerme ? 'text-red-400' : 'text-secondary-yellow' }}" aria-hidden="true"></i>
+                    <li class="flex items-center {{ $isMercrediFerme ? 'text-accent-red font-semibold' : '' }}">
+                        <i data-feather="{{ $isMercrediFerme ? 'slash' : 'clock' }}" class="w-6 h-6 mr-3 flex-shrink-0 {{ $isMercrediFerme ? 'text-accent-red' : 'text-secondary-yellow' }}" aria-hidden="true"></i>
                         <span>{{ $mercredi }}</span>
                     </li>
-                    <li class="flex items-center {{ $isJeudiFerme ? 'text-red-400 font-semibold' : '' }}">
-                        <i data-feather="{{ $isJeudiFerme ? 'slash' : 'clock' }}" class="w-6 h-6 mr-3 flex-shrink-0 {{ $isJeudiFerme ? 'text-red-400' : 'text-secondary-yellow' }}" aria-hidden="true"></i>
+                    <li class="flex items-center {{ $isJeudiFerme ? 'text-accent-red font-semibold' : '' }}">
+                        <i data-feather="{{ $isJeudiFerme ? 'slash' : 'clock' }}" class="w-6 h-6 mr-3 flex-shrink-0 {{ $isJeudiFerme ? 'text-accent-red' : 'text-secondary-yellow' }}" aria-hidden="true"></i>
                         <span>{{ $jeudi }}</span>
                     </li>
-                    <li class="flex items-center {{ $isVendrediFerme ? 'text-red-400 font-semibold' : '' }}">
-                        <i data-feather="{{ $isVendrediFerme ? 'slash' : 'clock' }}" class="w-6 h-6 mr-3 flex-shrink-0 {{ $isVendrediFerme ? 'text-red-400' : 'text-secondary-yellow' }}" aria-hidden="true"></i>
+                    <li class="flex items-center {{ $isVendrediFerme ? 'text-accent-red font-semibold' : '' }}">
+                        <i data-feather="{{ $isVendrediFerme ? 'slash' : 'clock' }}" class="w-6 h-6 mr-3 flex-shrink-0 {{ $isVendrediFerme ? 'text-accent-red' : 'text-secondary-yellow' }}" aria-hidden="true"></i>
                         <span>{{ $vendredi }}</span>
                     </li>
-                    <li class="flex items-center {{ $isSamediFerme ? 'text-red-400 font-semibold' : '' }}">
-                        <i data-feather="{{ $isSamediFerme ? 'slash' : 'clock' }}" class="w-6 h-6 mr-3 flex-shrink-0 {{ $isSamediFerme ? 'text-red-400' : 'text-secondary-yellow' }}" aria-hidden="true"></i>
+                    <li class="flex items-center {{ $isSamediFerme ? 'text-accent-red font-semibold' : '' }}">
+                        <i data-feather="{{ $isSamediFerme ? 'slash' : 'clock' }}" class="w-6 h-6 mr-3 flex-shrink-0 {{ $isSamediFerme ? 'text-accent-red' : 'text-secondary-yellow' }}" aria-hidden="true"></i>
                         <span>{{ $samedi }}</span>
                     </li>
-                    <li class="flex items-center {{ $isDimancheFerme ? 'text-red-400 font-semibold' : '' }}">
-                        <i data-feather="{{ $isDimancheFerme ? 'slash' : 'clock' }}" class="w-6 h-6 mr-3 flex-shrink-0 {{ $isDimancheFerme ? 'text-red-400' : 'text-secondary-yellow' }}" aria-hidden="true"></i>
+                    <li class="flex items-center {{ $isDimancheFerme ? 'text-accent-red font-semibold' : '' }}">
+                        <i data-feather="{{ $isDimancheFerme ? 'slash' : 'clock' }}" class="w-6 h-6 mr-3 flex-shrink-0 {{ $isDimancheFerme ? 'text-accent-red' : 'text-secondary-yellow' }}" aria-hidden="true"></i>
                         <span>{{ $dimanche }}</span>
                     </li>
                 </ul>
