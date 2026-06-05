@@ -264,6 +264,15 @@
                 </div>
             </div>
         </div>
+        
+        <!-- Bas de page avec crédits discrets -->
+        <div class="border-t border-white/10 mt-12 pt-8 text-center text-sm text-white/60">
+            <p>
+                &copy; {{ date('Y') }} Pointe ça Pointe. Tous droits réservés. 
+                <span class="mx-2" aria-hidden="true">|</span> 
+                Créé par <a href="https://subtrack.eu" target="_blank" rel="noopener noreferrer" class="hover:text-secondary-yellow underline transition-colors duration-300" aria-label="Créé par Subtrack (ouvre un nouvel onglet)">Subtrack</a>
+            </p>
+        </div>
     </footer>
     @stack('scripts')
     
