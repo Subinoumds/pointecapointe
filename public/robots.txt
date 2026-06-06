@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://pointecapointe.netlify.app/sitemap-final.xml
+Sitemap: https://pointe-ca-pointe.fr/sitemap.xml

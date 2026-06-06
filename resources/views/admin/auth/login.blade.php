@@ -47,7 +47,7 @@
             @endif
 
             <!-- Formulaire de connexion -->
-            <form action="{{ route('admin.login') }}" method="POST" class="space-y-6">
+            <form action="{{ route('admin.login.submit') }}" method="POST" class="space-y-6">
                 @csrf
                 
                 <div>

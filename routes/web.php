@@ -91,7 +91,7 @@ Route::get('/menus-groupe.html', function () {
 // Routes d'authentification admin
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/login', [App\Http\Controllers\AdminAuthController::class, 'showLogin'])->name('login');
-    Route::post('/login', [App\Http\Controllers\AdminAuthController::class, 'login'])->name('login');
+    Route::post('/login', [App\Http\Controllers\AdminAuthController::class, 'login'])->name('login.submit');
     Route::post('/logout', [App\Http\Controllers\AdminAuthController::class, 'logout'])->name('logout');
     Route::post('/change-password', [App\Http\Controllers\AdminAuthController::class, 'changePassword'])->name('change-password');
 });
