@@ -39,7 +39,8 @@ class MenuPdfTest extends TestCase
             'admin_authenticated' => true,
             'admin_token' => 'test-token'
         ])->put(route('admin.menu.pdf.update'), [
-            'pdf' => $pdf
+            'pdf' => $pdf,
+            'type' => 'drinks'
         ]);
 
         $response->assertRedirect(route('admin.menu.index'));
@@ -49,6 +50,33 @@ class MenuPdfTest extends TestCase
         $content = Content::where('key', 'drinks_pdf')->first();
         $this->assertNotNull($content);
         $this->assertNotEquals('boissons.pdf', $content->content);
+        $this->assertStringEndsWith('.pdf', $content->content);
+
+        // Check if file was stored on public disk
+        Storage::disk('public')->assertExists($content->content);
+    }
+
+    public function test_food_pdf_update_saves_file_and_database()
+    {
+        Storage::fake('public');
+
+        $pdf = UploadedFile::fake()->create('carte_repas.pdf', 100, 'application/pdf');
+
+        $response = $this->withSession([
+            'admin_authenticated' => true,
+            'admin_token' => 'test-token'
+        ])->put(route('admin.menu.pdf.update'), [
+            'pdf' => $pdf,
+            'type' => 'food'
+        ]);
+
+        $response->assertRedirect(route('admin.menu.index'));
+        $response->assertSessionHas('success');
+
+        // Check if database was updated
+        $content = Content::where('key', 'food_pdf')->first();
+        $this->assertNotNull($content);
+        $this->assertNotEquals('menu.pdf', $content->content);
         $this->assertStringEndsWith('.pdf', $content->content);
 
         // Check if file was stored on public disk

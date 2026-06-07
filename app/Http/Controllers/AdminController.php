@@ -131,25 +131,50 @@ class AdminController extends Controller
         return redirect()->route('admin.menu.index')->with('success', 'Menu supprimé avec succès !');
     }
 
-    public function menuPdfEdit()
+    public function menuPdfEdit(Request $request)
     {
+        $type = $request->query('type', 'drinks');
+        if ($type === 'food') {
+            $key = 'food_pdf';
+            $title = 'Carte complète des repas (PDF)';
+            $defaultFile = 'menu.pdf';
+        } else {
+            $key = 'drinks_pdf';
+            $title = 'Carte complète des boissons (PDF)';
+            $defaultFile = 'boissons.pdf';
+        }
+
         $content = Content::firstOrCreate(
-            ['key' => 'drinks_pdf'],
+            ['key' => $key],
             [
-                'title' => 'Carte complète des boissons (PDF)',
-                'content' => 'boissons.pdf',
+                'title' => $title,
+                'content' => $defaultFile,
                 'type' => 'file',
                 'is_active' => true
             ]
         );
-        return view('admin.menu.pdf', compact('content'));
+        return view('admin.menu.pdf', compact('content', 'type'));
     }
 
     public function menuPdfUpdate(Request $request)
     {
         $request->validate([
-            'pdf' => 'required|file|mimes:pdf|max:10240'
+            'pdf' => 'required|file|mimes:pdf|max:10240',
+            'type' => 'required|in:drinks,food'
         ]);
+
+        $type = $request->input('type');
+        if ($type === 'food') {
+            $key = 'food_pdf';
+            $title = 'Carte complète des repas (PDF)';
+            $defaultFile = 'menu.pdf';
+            $successMsg = 'La carte des repas PDF a été mise à jour avec succès !';
+        } else {
+            $key = 'drinks_pdf';
+            $title = 'Carte complète des boissons (PDF)';
+            $defaultFile = 'boissons.pdf';
+            $successMsg = 'La carte des boissons PDF a été mise à jour avec succès !';
+        }
 
         if ($request->hasFile('pdf')) {
             $file = $request->file('pdf');
@@ -158,8 +183,8 @@ class AdminController extends Controller
             $filename = time() . '_' . $cleanName . '.pdf';
             
             // Supprimer l'ancien fichier s'il existe et est personnalisé
-            $content = Content::where('key', 'drinks_pdf')->first();
-            if ($content && $content->content && $content->content !== 'boissons.pdf') {
+            $content = Content::where('key', $key)->first();
+            if ($content && $content->content && $content->content !== $defaultFile) {
                 Storage::disk('public')->delete($content->content);
             }
 
@@ -168,16 +193,16 @@ class AdminController extends Controller
 
             // Mettre à jour la base de données
             Content::updateOrCreate(
-                ['key' => 'drinks_pdf'],
+                ['key' => $key],
                 [
-                    'title' => 'Carte complète des boissons (PDF)',
+                    'title' => $title,
                     'content' => $filename,
                     'type' => 'file',
                     'is_active' => true
                 ]
             );
 
-            return redirect()->route('admin.menu.index')->with('success', 'La carte des boissons PDF a été mise à jour avec succès !');
+            return redirect()->route('admin.menu.index')->with('success', $successMsg);
         }
 
         return redirect()->back()->withErrors(['pdf' => 'Aucun fichier n\'a été reçu.']);

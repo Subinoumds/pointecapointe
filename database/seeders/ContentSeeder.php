@@ -258,6 +258,13 @@ class ContentSeeder extends Seeder
                 'content' => 'boissons.pdf',
                 'type' => 'file',
                 'is_active' => true
+            ],
+            [
+                'key' => 'food_pdf',
+                'title' => 'Carte complète des repas (PDF)',
+                'content' => 'menu.pdf',
+                'type' => 'file',
+                'is_active' => true
             ]
         ];
 

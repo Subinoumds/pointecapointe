@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
-@section('title', 'Modifier la carte PDF - Administration')
-@section('description', 'Téléversez une nouvelle version du menu boissons PDF')
+@section('title', 'Modifier la carte ' . ($type === 'food' ? 'Repas' : 'Boissons') . ' PDF - Administration')
+@section('description', 'Téléversez une nouvelle version du menu ' . ($type === 'food' ? 'repas' : 'boissons') . ' PDF')
 
 @section('content')
 <div class="min-h-screen bg-gray-50 py-12">
@@ -10,7 +10,7 @@
             
             <!-- En-tête -->
             <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
-                <h1 class="text-2xl sm:text-3xl font-bold text-primary-blue">Modifier la carte PDF</h1>
+                <h1 class="text-2xl sm:text-3xl font-bold text-primary-blue">Modifier la carte {{ $type === 'food' ? 'Repas' : 'Boissons' }} PDF</h1>
                 <a href="{{ route('admin.menu.index') }}" class="text-primary-blue hover:text-secondary-yellow font-semibold text-sm flex items-center gap-1">
                     ← Retour aux menus
                 </a>
@@ -20,15 +20,15 @@
             <div class="bg-blue-50 border-l-4 border-primary-blue p-4 mb-8 rounded-r-2xl">
                 <p class="text-xs uppercase tracking-wider font-bold text-primary-blue">Fichier actuel</p>
                 <p class="text-base font-semibold text-gray-800 mt-1 truncate">
-                    @if($content->content && $content->content !== 'boissons.pdf')
+                    @if($content->content && $content->content !== ($type === 'food' ? 'menu.pdf' : 'boissons.pdf'))
                         <span class="text-green-600 font-bold">✓ Fichier personnalisé :</span> {{ $content->content }}
                     @else
-                        <span class="text-gray-500 italic">Fichier par défaut (boissons.pdf)</span>
+                        <span class="text-gray-500 italic">Fichier par défaut ({{ $type === 'food' ? 'menu.pdf' : 'boissons.pdf' }})</span>
                     @endif
                 </p>
                 @if($content->content)
                     <div class="mt-2">
-                        <a href="{{ $content->content === 'boissons.pdf' ? asset('boissons.pdf') : asset('storage/' . $content->content) }}" target="_blank" class="text-xs text-primary-blue hover:underline inline-flex items-center gap-1 font-semibold">
+                        <a href="{{ $content->content === ($type === 'food' ? 'menu.pdf' : 'boissons.pdf') ? asset($type === 'food' ? 'menu.pdf' : 'boissons.pdf') : asset('storage/' . $content->content) }}" target="_blank" class="text-xs text-primary-blue hover:underline inline-flex items-center gap-1 font-semibold">
                             👁️ Visualiser le fichier actuel
                         </a>
                     </div>
@@ -38,6 +38,7 @@
             <form action="{{ route('admin.menu.pdf.update') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
                 @csrf
                 @method('PUT')
+                <input type="hidden" name="type" value="{{ $type }}">
                 
                 <!-- Zone d'upload du fichier -->
                 <div>

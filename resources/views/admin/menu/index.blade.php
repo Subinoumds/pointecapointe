@@ -33,6 +33,12 @@
                         <a href="{{ route('admin.menu-item.create') }}" class="block w-full px-4 py-2 bg-secondary-yellow text-primary-blue font-semibold rounded-lg hover:bg-primary-blue hover:text-white transition duration-300 text-center">
                             + Ajouter un élément
                         </a>
+                        <a href="{{ route('admin.menu.pdf.edit', ['type' => 'food']) }}" class="block w-full px-4 py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition duration-300 text-center flex items-center justify-center gap-1.5">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                            </svg>
+                            Modifier le PDF de la Carte
+                        </a>
                     </div>
                 </div>
 
@@ -54,7 +60,7 @@
                         <a href="{{ route('admin.drink.create') }}" class="block w-full px-4 py-2 bg-secondary-yellow text-primary-blue font-semibold rounded-lg hover:bg-primary-blue hover:text-white transition duration-300 text-center">
                             + Ajouter une boisson
                         </a>
-                        <a href="{{ route('admin.menu.pdf.edit') }}" class="block w-full px-4 py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition duration-300 text-center flex items-center justify-center gap-1.5">
+                        <a href="{{ route('admin.menu.pdf.edit', ['type' => 'drinks']) }}" class="block w-full px-4 py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition duration-300 text-center flex items-center justify-center gap-1.5">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
                             </svg>

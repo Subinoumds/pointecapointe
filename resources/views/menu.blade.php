@@ -107,6 +107,12 @@
                     </div>
                 </div>
             </div>
+
+            <div class="mt-12 text-center" data-aos="fade-up" data-aos-delay="500">
+                <a href="{{ (isset($contents['food_pdf']) && $contents['food_pdf'] !== 'menu.pdf') ? asset('storage/' . $contents['food_pdf']) : asset('menu.pdf') }}" target="_blank" rel="noopener noreferrer" class="px-8 py-4 inline-block bg-secondary-yellow text-primary-blue font-semibold rounded-full shadow-lg hover:bg-white hover:text-primary-blue transition duration-300 transform hover:scale-105">
+                    Voir notre carte complète
+                </a>
+            </div>
         </div>
     </section>
 
@@ -183,7 +189,7 @@
                     </div>
                     <div class="mt-8 text-center" data-aos="fade-up" data-aos-delay="200">
                         <a href="{{ (isset($contents['drinks_pdf']) && $contents['drinks_pdf'] !== 'boissons.pdf') ? asset('storage/' . $contents['drinks_pdf']) : asset('boissons.pdf') }}" target="_blank" rel="noopener noreferrer" class="px-8 py-4 inline-block bg-primary-blue text-white font-semibold rounded-full shadow-lg hover:bg-secondary-yellow hover:text-primary-blue transition duration-300 transform hover:scale-105">
-                            Télécharger notre carte complète des boissons
+                            Voir notre carte complète des boissons
                         </a>
                     </div>
                 </div>
