@@ -19,6 +19,8 @@
     $carouselImages = \App\Models\Image::getByCategory('carousel');
 @endphp
 
+<h1 class="sr-only">Pointe ça Pointe — Bistrot sur les bords de Loire à Bouchemaine</h1>
+
 <div class="relative overflow-hidden h-[60dvh] md:h-[calc(100dvh-112px)]">
     <div class="relative h-full w-full">
         @if($carouselImages->count() > 0)
@@ -27,7 +29,7 @@
                     <img src="{{ asset('storage/' . $carouselImage->path) }}" alt="{{ $carouselImage->alt_text ?: 'Carousel image' }}" class="absolute inset-0 w-full h-full object-cover" {!! $index === 0 ? 'fetchpriority="high"' : 'fetchpriority="low" loading="lazy"' !!}>
                     <div class="absolute inset-0 bg-black/40"></div>
                     <div class="relative z-10 text-center px-4">
-                        <h1 class="text-4xl md:text-7xl font-bold text-white mb-6 md:mb-8">{{ $contents['home_title'] ?? 'Pointe ça Pointe' }}</h1>
+                        <p class="text-4xl md:text-7xl font-bold text-white mb-6 md:mb-8">{{ $contents['home_title'] ?? 'Pointe ça Pointe' }}</p>
                         <div class="flex flex-col md:flex-row justify-center gap-4 md:gap-6">
                             <a href="{{ $contents['carousel_btn1_link'] ?? route('menu') }}" class="px-6 py-3 md:px-8 md:py-4 bg-white text-primary-blue font-semibold rounded-full shadow-lg hover:bg-gray-100 transition duration-300 transform hover:scale-105">
                                 {{ $contents['carousel_btn1_text'] ?? 'Menu' }}
@@ -45,7 +47,7 @@
                 <img src="{{ asset('img/carousel/facade1.jpg') }}" alt="Façade du restaurant" class="absolute inset-0 w-full h-full object-cover" fetchpriority="high">
                 <div class="absolute inset-0 bg-black/40"></div>
                 <div class="relative z-10 text-center px-4">
-                    <h1 class="text-4xl md:text-7xl font-bold text-white mb-6 md:mb-8">{{ $contents['home_title'] ?? 'Pointe ça Pointe' }}</h1>
+                    <p class="text-4xl md:text-7xl font-bold text-white mb-6 md:mb-8">{{ $contents['home_title'] ?? 'Pointe ça Pointe' }}</p>
                     <div class="flex flex-col md:flex-row justify-center gap-4 md:gap-6">
                         <a href="{{ $contents['carousel_btn1_link'] ?? route('menu') }}" class="px-6 py-3 md:px-8 md:py-4 bg-white text-primary-blue font-semibold rounded-full shadow-lg hover:bg-gray-100 transition duration-300 transform hover:scale-105">
                             {{ $contents['carousel_btn1_text'] ?? 'Menu' }}
@@ -62,7 +64,7 @@
                 <img src="{{ asset('img/carousel/loire1.jpg') }}" alt="Vue sur la Loire" class="absolute inset-0 w-full h-full object-cover" fetchpriority="low" loading="lazy">
                 <div class="absolute inset-0 bg-black/40"></div>
                 <div class="relative z-10 text-center px-4">
-                    <h1 class="text-4xl md:text-7xl font-bold text-white mb-6 md:mb-8">{{ $contents['home_title'] ?? 'Pointe ça Pointe' }}</h1>
+                    <p class="text-4xl md:text-7xl font-bold text-white mb-6 md:mb-8">{{ $contents['home_title'] ?? 'Pointe ça Pointe' }}</p>
                     <div class="flex flex-col md:flex-row justify-center gap-4 md:gap-6">
                         <a href="{{ $contents['carousel_btn1_link'] ?? route('menu') }}" class="px-6 py-3 md:px-8 md:py-4 bg-white text-primary-blue font-semibold rounded-full shadow-lg hover:bg-gray-100 transition duration-300 transform hover:scale-105">
                             {{ $contents['carousel_btn1_text'] ?? 'Menu' }}
@@ -79,7 +81,7 @@
                 <img src="{{ asset('img/carousel/facade2.jpg') }}" alt="Façade du restaurant" class="absolute inset-0 w-full h-full object-cover" fetchpriority="low" loading="lazy">
                 <div class="absolute inset-0 bg-black/40"></div>
                 <div class="relative z-10 text-center px-4">
-                    <h1 class="text-4xl md:text-7xl font-bold text-white mb-6 md:mb-8">{{ $contents['home_title'] ?? 'Pointe ça Pointe' }}</h1>
+                    <p class="text-4xl md:text-7xl font-bold text-white mb-6 md:mb-8">{{ $contents['home_title'] ?? 'Pointe ça Pointe' }}</p>
                     <div class="flex flex-col md:flex-row justify-center gap-4 md:gap-6">
                         <a href="{{ $contents['carousel_btn1_link'] ?? route('menu') }}" class="px-6 py-3 md:px-8 md:py-4 bg-white text-primary-blue font-semibold rounded-full shadow-lg hover:bg-gray-100 transition duration-300 transform hover:scale-105">
                             {{ $contents['carousel_btn1_text'] ?? 'Menu' }}
@@ -95,7 +97,7 @@
                 <img src="{{ asset('img/carousel/loire2.jpg') }}" alt="Vue sur la Loire" class="absolute inset-0 w-full h-full object-cover" fetchpriority="low" loading="lazy">
                 <div class="absolute inset-0 bg-black/40"></div>
                 <div class="relative z-10 text-center px-4">
-                    <h1 class="text-4xl md:text-7xl font-bold text-white mb-6 md:mb-8">{{ $contents['home_title'] ?? 'Pointe ça Pointe' }}</h1>
+                    <p class="text-4xl md:text-7xl font-bold text-white mb-6 md:mb-8">{{ $contents['home_title'] ?? 'Pointe ça Pointe' }}</p>
                     <div class="flex flex-col md:flex-row justify-center gap-4 md:gap-6">
                         <a href="{{ $contents['carousel_btn1_link'] ?? route('menu') }}" class="px-6 py-3 md:px-8 md:py-4 bg-white text-primary-blue font-semibold rounded-full shadow-lg hover:bg-gray-100 transition duration-300 transform hover:scale-105">
                             {{ $contents['carousel_btn1_text'] ?? 'Menu' }}
@@ -111,7 +113,7 @@
                 <img src="{{ asset('img/carousel/facade3.jpg') }}" alt="Façade du restaurant" class="absolute inset-0 w-full h-full object-cover" fetchpriority="low" loading="lazy">
                 <div class="absolute inset-0 bg-black/40"></div>
                 <div class="relative z-10 text-center px-4">
-                    <h1 class="text-4xl md:text-7xl font-bold text-white mb-6 md:mb-8">{{ $contents['home_title'] ?? 'Pointe ça Pointe' }}</h1>
+                    <p class="text-4xl md:text-7xl font-bold text-white mb-6 md:mb-8">{{ $contents['home_title'] ?? 'Pointe ça Pointe' }}</p>
                     <div class="flex flex-col md:flex-row justify-center gap-4 md:gap-6">
                         <a href="{{ $contents['carousel_btn1_link'] ?? route('menu') }}" class="px-6 py-3 md:px-8 md:py-4 bg-white text-primary-blue font-semibold rounded-full shadow-lg hover:bg-gray-100 transition duration-300 transform hover:scale-105">
                             {{ $contents['carousel_btn1_text'] ?? 'Menu' }}

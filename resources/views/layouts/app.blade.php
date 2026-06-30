@@ -28,81 +28,64 @@
       "@@context": "https://schema.org",
       "@@type": "Restaurant",
       "name": "Pointe ça Pointe",
-      "image": "{{ asset('img/logo.jpg') }}",
-      "@@id": "{{ url('/') }}/#restaurant",
-      "url": "{{ url('/') }}",
-      "telephone": "{{ str_replace([' ', '+'], '', $contents['footer_phone'] ?? '+33244855536') }}",
-      "priceRange": "$$",
-      "menu": "{{ route('menu') }}",
-      "servesCuisine": "French, Bistrot, Burgers",
+      "image": "https://pointe-ca-pointe.fr/img/logo.jpg",
+      "url": "https://pointe-ca-pointe.fr",
+      "telephone": "+33244855536",
+      "email": "direction.papapoule@gmail.com",
+      "priceRange": "€€",
+      "servesCuisine": "Bistrot français",
       "address": {
         "@@type": "PostalAddress",
-        "streetAddress": "4 Pl. Ruzebouc",
+        "streetAddress": "4 Place Ruzebouc",
         "addressLocality": "Bouchemaine",
         "postalCode": "49080",
         "addressCountry": "FR"
       },
       "geo": {
         "@@type": "GeoCoordinates",
-        "latitude": 47.4090721,
-        "longitude": -0.6200000
+        "latitude": 47.411649,
+        "longitude": -0.612845
       },
       "openingHoursSpecification": [
-        {
-          "@@type": "OpeningHoursSpecification",
-          "dayOfWeek": "Wednesday",
-          "opens": "11:00",
-          "closes": "14:00"
-        },
-        {
-          "@@type": "OpeningHoursSpecification",
-          "dayOfWeek": "Wednesday",
-          "opens": "18:00",
-          "closes": "20:45"
-        },
-        {
-          "@@type": "OpeningHoursSpecification",
-          "dayOfWeek": "Thursday",
-          "opens": "11:00",
-          "closes": "14:00"
-        },
-        {
-          "@@type": "OpeningHoursSpecification",
-          "dayOfWeek": "Thursday",
-          "opens": "18:00",
-          "closes": "20:45"
-        },
-        {
-          "@@type": "OpeningHoursSpecification",
-          "dayOfWeek": "Friday",
-          "opens": "10:30",
-          "closes": "14:00"
-        },
-        {
-          "@@type": "OpeningHoursSpecification",
-          "dayOfWeek": "Friday",
-          "opens": "18:00",
-          "closes": "21:00"
-        },
-        {
-          "@@type": "OpeningHoursSpecification",
-          "dayOfWeek": "Saturday",
-          "opens": "10:00",
-          "closes": "21:00"
-        },
-        {
-          "@@type": "OpeningHoursSpecification",
-          "dayOfWeek": "Sunday",
-          "opens": "10:30",
-          "closes": "17:00"
-        }
+        { "@@type": "OpeningHoursSpecification", "dayOfWeek": "Tuesday", "opens": "10:30", "closes": "14:00" },
+        { "@@type": "OpeningHoursSpecification", "dayOfWeek": "Tuesday", "opens": "18:30", "closes": "21:00" },
+        { "@@type": "OpeningHoursSpecification", "dayOfWeek": "Wednesday", "opens": "10:30", "closes": "14:00" },
+        { "@@type": "OpeningHoursSpecification", "dayOfWeek": "Wednesday", "opens": "18:30", "closes": "21:00" },
+        { "@@type": "OpeningHoursSpecification", "dayOfWeek": "Thursday", "opens": "10:30", "closes": "14:00" },
+        { "@@type": "OpeningHoursSpecification", "dayOfWeek": "Thursday", "opens": "18:30", "closes": "21:00" },
+        { "@@type": "OpeningHoursSpecification", "dayOfWeek": "Friday", "opens": "10:30", "closes": "14:00" },
+        { "@@type": "OpeningHoursSpecification", "dayOfWeek": "Friday", "opens": "18:30", "closes": "21:30" },
+        { "@@type": "OpeningHoursSpecification", "dayOfWeek": "Saturday", "opens": "10:30", "closes": "14:00" },
+        { "@@type": "OpeningHoursSpecification", "dayOfWeek": "Saturday", "opens": "18:30", "closes": "21:30" },
+        { "@@type": "OpeningHoursSpecification", "dayOfWeek": "Sunday", "opens": "10:30", "closes": "15:00" }
       ],
+      "aggregateRating": {
+        "@@type": "AggregateRating",
+        "ratingValue": "4.8",
+        "reviewCount": "126",
+        "bestRating": "5"
+      },
       "sameAs": [
-        "{{ $contents['social_facebook'] ?? 'https://www.facebook.com/PointeCaPointeBouchemaine/' }}",
-        "{{ $contents['social_instagram'] ?? 'https://www.instagram.com/pointecapointe49?igsh=M3BxYTdjcDN1YzF1' }}"
+        "https://www.instagram.com/pointecapointe49",
+        "https://www.facebook.com/PointeCaPointeBouchemaine/"
       ]
     }
     </script>
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="restaurant.restaurant" />
+    <meta property="og:title" content="@yield('title', 'Pointe ça Pointe - Bistrot sur les bords de Loire à Bouchemaine')" />
+    <meta property="og:description" content="@yield('description', 'Bistrot décontracté à Bouchemaine : terrasse, plats frais, burgers maison, ambiance familiale.')" />
+    <meta property="og:image" content="https://pointe-ca-pointe.fr/storage/carousel/facade1.jpg" />
+    <meta property="og:url" content="{{ request()->url() }}" />
+    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:site_name" content="Pointe ça Pointe" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="@yield('title', 'Pointe ça Pointe - Bistrot sur les bords de Loire à Bouchemaine')" />
+    <meta name="twitter:description" content="@yield('description', 'Bistrot décontracté à Bouchemaine : terrasse, plats frais, burgers maison, ambiance familiale.')" />
+    <meta name="twitter:image" content="https://pointe-ca-pointe.fr/storage/carousel/facade1.jpg" />
     
     @stack('styles')
 </head>
