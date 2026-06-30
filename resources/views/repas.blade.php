@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Repas de Groupe - Pointe ça Pointe')
+@section('title', 'Repas de Groupe Bouchemaine | Privatisation Restaurant - Pointe ça Pointe')
 @section('description', 'Organisez votre soirée au bistrot La Pointe. Réservez pour une famille, un groupe d\'amis')
 
 @section('content')

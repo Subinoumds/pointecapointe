@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Pointe ça Pointe - Bistrot sur les bords de Loire à Bouchemaine')
+@section('title', 'Restaurant Bouchemaine | Pointe ça Pointe — Bistrot & Burgers Maison')
 @section('description', 'Découvrez Pointe ça Pointe, un bistrot décontracté sur les bords de Loire à Bouchemaine. Profitez de notre terrasse, de nos plats bistrot frais, de nos burgers maison et de notre ambiance familiale.')
 
 @push('preload')

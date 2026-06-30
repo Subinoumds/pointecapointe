@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Pointe ça Pointe - Galerie')
+@section('title', 'Restaurant en Photos | Galerie - Pointe ça Pointe à Bouchemaine')
 @section('description', 'Découvrez l\'ambiance bistrot et la terrasse de notre bistrot sur les bords de Loire.')
 
 @push('styles')

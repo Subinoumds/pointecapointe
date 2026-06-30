@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Pointe ça Pointe - Menus du midi à Bouchemaine')
+@section('title', 'Menus du Midi Bouchemaine | Formule Déjeuner - Restaurant Pointe ça Pointe')
 @section('description', 'Découvrez nos menus du midi, élaborés avec des produits frais et de saison. Idéal pour une pause déjeuner rapide et gourmande à Bouchemaine.')
 
 @push('styles')

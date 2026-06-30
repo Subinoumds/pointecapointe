@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Pointe ça Pointe - Menus de groupe pour repas de groupe, séminaires et événements')
+@section('title', 'Menus de Groupe Bouchemaine | Repas de Famille & Séminaires - Pointe ça Pointe')
 @section('description', 'Découvrez nos menus de groupe sur mesure, parfaits pour les événements d\'entreprise, les repas de famille ou les célébrations. Réservez pour une expérience culinaire unique à Bouchemaine.')
 
 @section('content')

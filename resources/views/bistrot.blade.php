@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Définition Bistrot - Pointe ça Pointe')
+@section('title', 'Bistrot Bouchemaine | Notre Concept & Histoire - Pointe ça Pointe')
 @section('description', 'Découvrez l\'histoire et la définition du bistrot, ce concept qui nous est si cher à Pointe ça Pointe.')
 
 @section('content')

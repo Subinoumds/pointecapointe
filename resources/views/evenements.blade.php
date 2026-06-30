@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Pointe ça Pointe - Événements & Concerts à Bouchemaine')
+@section('title', 'Concerts & Événements à Bouchemaine | Restaurant Pointe ça Pointe')
 @section('description', 'Découvrez les événements à venir et les concerts organisés au Pointe ça Pointe, votre bistrot sur les bords de Loire à Bouchemaine.')
 
 @push('styles')
