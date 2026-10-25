@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 
@@ -16,22 +17,34 @@ class AdminAuthController extends Controller
 
     public function login(Request $request)
     {
+        // Protection contre la force brute : 5 tentatives par adresse IP, puis blocage 5 minutes
+        $key = 'admin-login-attempts:' . $request->ip();
+        if (RateLimiter::tooManyAttempts($key, 5)) {
+            $seconds = RateLimiter::availableIn($key);
+            return response()->view('admin.auth.blocked', compact('seconds'), 429);
+        }
+
         $request->validate([
             'password' => 'required|string|min:8'
         ]);
 
         // Vérifier le mot de passe admin (stocké de manière sécurisée)
         $adminPassword = config('app.admin_password');
-        
+
         if (Hash::check($request->password, $adminPassword)) {
+            RateLimiter::clear($key);
+            $request->session()->regenerate();
+
             // Générer un token de session sécurisé
             $sessionToken = Str::random(64);
             Session::put('admin_authenticated', true);
             Session::put('admin_token', $sessionToken);
             Session::put('admin_login_time', now());
-            
+
             return redirect()->route('admin.index')->with('success', 'Connexion réussie !');
         }
+
+        RateLimiter::hit($key, 300);
 
         return back()->withErrors(['password' => 'Mot de passe incorrect.'])->withInput();
     }

@@ -1,0 +1,492 @@
+From e36f70c29a8d6077d358723c1f1a9fa986628488 Mon Sep 17 00:00:00 2001
+From: Khadidja Masri <comoestufamilia@gmail.com>
+Date: Sun, 25 Oct 2026 16:12:29 +0100
+Subject: [PATCH] fix: corrections de recette (301, limitation des connexions,
+ WebP, HTML des contenus) + tests Pest
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01VhqR3TrhGyP4gb17PmLkge
+---
+ app/Http/Controllers/AdminAuthController.php  | 17 +++-
+ app/Http/Controllers/AdminController.php      | 16 +--
+ .../Middleware/AdminSecurityMiddleware.php    | 25 +++--
+ routes/web.php                                | 41 ++------
+ tests/Feature/AdminAuthTest.php               | 53 ++++++++++
+ tests/Feature/AdminContentTest.php            | 99 +++++++++++++++++++
+ tests/Feature/ExampleTest.php                 | 10 +-
+ tests/Feature/LegacyRedirectsTest.php         | 14 +++
+ tests/Feature/PublicPagesTest.php             | 40 ++++++++
+ 9 files changed, 256 insertions(+), 59 deletions(-)
+ create mode 100644 tests/Feature/AdminAuthTest.php
+ create mode 100644 tests/Feature/AdminContentTest.php
+ create mode 100644 tests/Feature/LegacyRedirectsTest.php
+ create mode 100644 tests/Feature/PublicPagesTest.php
+
+diff --git a/app/Http/Controllers/AdminAuthController.php b/app/Http/Controllers/AdminAuthController.php
+index 8a6dbd1..39de1f5 100644
+--- a/app/Http/Controllers/AdminAuthController.php
++++ b/app/Http/Controllers/AdminAuthController.php
+@@ -4,6 +4,7 @@
+ 
+ use Illuminate\Http\Request;
+ use Illuminate\Support\Facades\Hash;
++use Illuminate\Support\Facades\RateLimiter;
+ use Illuminate\Support\Facades\Session;
+ use Illuminate\Support\Str;
+ 
+@@ -16,23 +17,35 @@ public function showLogin()
+ 
+     public function login(Request $request)
+     {
++        // Protection contre la force brute : 5 tentatives par adresse IP, puis blocage 5 minutes
++        $key = 'admin-login-attempts:' . $request->ip();
++        if (RateLimiter::tooManyAttempts($key, 5)) {
++            $seconds = RateLimiter::availableIn($key);
++            return response()->view('admin.auth.blocked', compact('seconds'), 429);
++        }
++
+         $request->validate([
+             'password' => 'required|string|min:8'
+         ]);
+ 
+         // Vérifier le mot de passe admin (stocké de manière sécurisée)
+         $adminPassword = config('app.admin_password');
+-        
++
+         if (Hash::check($request->password, $adminPassword)) {
++            RateLimiter::clear($key);
++            $request->session()->regenerate();
++
+             // Générer un token de session sécurisé
+             $sessionToken = Str::random(64);
+             Session::put('admin_authenticated', true);
+             Session::put('admin_token', $sessionToken);
+             Session::put('admin_login_time', now());
+-            
++
+             return redirect()->route('admin.index')->with('success', 'Connexion réussie !');
+         }
+ 
++        RateLimiter::hit($key, 300);
++
+         return back()->withErrors(['password' => 'Mot de passe incorrect.'])->withInput();
+     }
+ 
+diff --git a/app/Http/Controllers/AdminController.php b/app/Http/Controllers/AdminController.php
+index 22d648d..7198e6d 100644
+--- a/app/Http/Controllers/AdminController.php
++++ b/app/Http/Controllers/AdminController.php
+@@ -224,7 +224,7 @@ public function imageStore(Request $request)
+     {
+         $request->validate([
+             'images' => 'required|array|min:1',
+-            'images.*' => 'required|image|mimes:jpeg,png,jpg,gif|max:10240',
++            'images.*' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:10240',
+             'category' => 'required',
+             'alt_text' => 'nullable',
+             'sort_order' => 'nullable|integer',
+@@ -259,7 +259,7 @@ public function imageUpdate(Request $request, GalleryImage $image)
+     {
+         $request->validate([
+             'name' => 'required',
+-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240',
++            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:10240',
+             'category' => 'required',
+             'alt_text' => 'nullable',
+             'sort_order' => 'nullable|integer',
+@@ -697,7 +697,7 @@ public function middayMenuStoreImages(Request $request)
+     {
+         $request->validate([
+             'images' => 'required|array|min:1',
+-            'images.*' => 'required|image|mimes:jpeg,png,jpg,gif|max:10240'
++            'images.*' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:10240'
+         ]);
+ 
+         $uploadedCount = 0;
+@@ -729,7 +729,7 @@ public function middayMenuEditImage(MiddayMenu $middayMenu)
+     public function middayMenuUpdateImage(Request $request, MiddayMenu $middayMenu)
+     {
+         $request->validate([
+-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:10240'
++            'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:10240'
+         ]);
+ 
+         // Supprimer l'ancienne image
+@@ -755,7 +755,7 @@ public function middayMenuStore(Request $request)
+             'name' => 'required|string|max:255',
+             'description' => 'nullable|string',
+             'price' => 'required|numeric|min:0',
+-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:10240',
++            'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:10240',
+             'sort_order' => 'nullable|integer|min:0',
+             'is_active' => 'boolean'
+         ]);
+@@ -785,7 +785,7 @@ public function middayMenuUpdate(Request $request, MiddayMenu $middayMenu)
+             'name' => 'required|string|max:255',
+             'description' => 'nullable|string',
+             'price' => 'required|numeric|min:0',
+-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240',
++            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:10240',
+             'sort_order' => 'nullable|integer|min:0',
+             'is_active' => 'boolean'
+         ]);
+@@ -898,7 +898,7 @@ public function carouselCreate()
+     public function carouselStore(Request $request)
+     {
+         $request->validate([
+-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:10240',
++            'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:10240',
+             'alt_text' => 'nullable|string|max:255',
+             'sort_order' => 'nullable|integer|min:0',
+             'is_active' => 'boolean'
+@@ -930,7 +930,7 @@ public function carouselEdit(Image $image)
+     public function carouselUpdate(Request $request, Image $image)
+     {
+         $request->validate([
+-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240',
++            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:10240',
+             'alt_text' => 'nullable|string|max:255',
+             'sort_order' => 'nullable|integer|min:0',
+             'is_active' => 'boolean'
+diff --git a/app/Http/Middleware/AdminSecurityMiddleware.php b/app/Http/Middleware/AdminSecurityMiddleware.php
+index c3ad583..59d9d65 100644
+--- a/app/Http/Middleware/AdminSecurityMiddleware.php
++++ b/app/Http/Middleware/AdminSecurityMiddleware.php
+@@ -36,22 +36,19 @@ public function handle(Request $request, Closure $next): Response
+             return redirect()->route('admin.login')->with('error', 'Session expirée.');
+         }
+ 
+-        // Protection contre les attaques par force brute (seulement sur les tentatives de connexion)
+-        if ($request->is('admin/login') && $request->isMethod('POST')) {
+-            $key = 'admin-login-attempts:' . $request->ip();
+-            if (RateLimiter::tooManyAttempts($key, 5)) {
+-                $seconds = RateLimiter::availableIn($key);
+-                return response()->view('admin.auth.blocked', compact('seconds'), 429);
++        // Protection contre les attaques XSS : on nettoie uniquement les champs envoyés,
++        // sauf le contenu des blocs de type HTML, qui doit garder ses balises.
++        $sanitized = [];
++        foreach (['name', 'description', 'content'] as $field) {
++            if (! $request->has($field)) {
++                continue;
+             }
++            if ($field === 'content' && $request->input('type') === 'html') {
++                continue;
++            }
++            $sanitized[$field] = strip_tags((string) $request->input($field));
+         }
+-
+-        // Protection contre les attaques XSS
+-        $request->merge([
+-            'password' => strip_tags($request->input('password', '')),
+-            'name' => strip_tags($request->input('name', '')),
+-            'description' => strip_tags($request->input('description', '')),
+-            'content' => strip_tags($request->input('content', ''))
+-        ]);
++        $request->merge($sanitized);
+ 
+         // Headers de sécurité
+         $response = $next($request);
+diff --git a/routes/web.php b/routes/web.php
+index 083e963..0dab98e 100644
+--- a/routes/web.php
++++ b/routes/web.php
+@@ -55,38 +55,15 @@
+     return view('bistrot');
+ })->name('bistrot');
+ 
+-// Redirections pour les anciens liens HTML
+-Route::get('/index.html', function () {
+-    return redirect()->route('home');
+-});
+-
+-Route::get('/bistrot.html', function () {
+-    return redirect()->route('bistrot');
+-});
+-
+-Route::get('/menu.html', function () {
+-    return redirect()->route('menu');
+-});
+-
+-Route::get('/galerie.html', function () {
+-    return redirect()->route('galerie');
+-});
+-
+-Route::get('/evenements.html', function () {
+-    return redirect()->route('evenements');
+-});
+-
+-Route::get('/repas.html', function () {
+-    return redirect()->route('repas');
+-});
+-
+-Route::get('/menus-midi.html', function () {
+-    return redirect()->route('menus.midi');
+-});
+-
+-Route::get('/menus-groupe.html', function () {
+-    return redirect()->route('menus.groupe');
+-});
++// Redirections permanentes (301) des anciennes pages HTML, pour conserver le référencement
++Route::permanentRedirect('/index.html', '/');
++Route::permanentRedirect('/bistrot.html', '/bistrot');
++Route::permanentRedirect('/menu.html', '/menu');
++Route::permanentRedirect('/galerie.html', '/galerie');
++Route::permanentRedirect('/evenements.html', '/evenements');
++Route::permanentRedirect('/repas.html', '/repas');
++Route::permanentRedirect('/menus-midi.html', '/menus-midi');
++Route::permanentRedirect('/menus-groupe.html', '/menus-groupe');
+ 
+ // Routes d'authentification admin
+ Route::prefix('admin')->name('admin.')->group(function () {
+diff --git a/tests/Feature/AdminAuthTest.php b/tests/Feature/AdminAuthTest.php
+new file mode 100644
+index 0000000..7b86a24
+--- /dev/null
++++ b/tests/Feature/AdminAuthTest.php
+@@ -0,0 +1,53 @@
++<?php
++
++use Illuminate\Foundation\Testing\RefreshDatabase;
++use Illuminate\Support\Facades\Hash;
++use Illuminate\Support\Facades\RateLimiter;
++
++uses(RefreshDatabase::class);
++
++beforeEach(function () {
++    $this->withoutVite();
++    config(['app.admin_password' => Hash::make('MotDePasse-Test-2026')]);
++    RateLimiter::clear('admin-login-attempts:127.0.0.1');
++});
++
++it('redirige vers la connexion sans session administrateur', function (string $url) {
++    $this->get($url)->assertRedirect(route('admin.login'));
++})->with(['/admin', '/admin/menu-item', '/admin/event', '/admin/wine', '/admin/menu-midi', '/admin/testimonial']);
++
++it('connecte le gérant avec le bon mot de passe', function () {
++    $this->post(route('admin.login.submit'), ['password' => 'MotDePasse-Test-2026'])
++        ->assertRedirect(route('admin.index'))
++        ->assertSessionHas('admin_authenticated', true);
++});
++
++it('refuse un mauvais mot de passe', function () {
++    $this->post(route('admin.login.submit'), ['password' => 'mauvais-mot-de-passe'])
++        ->assertSessionHasErrors('password')
++        ->assertSessionMissing('admin_authenticated');
++});
++
++it('bloque la connexion après 5 tentatives échouées', function () {
++    foreach (range(1, 5) as $i) {
++        $this->post(route('admin.login.submit'), ['password' => 'mauvais-mot-de-passe']);
++    }
++
++    $this->post(route('admin.login.submit'), ['password' => 'MotDePasse-Test-2026'])
++        ->assertStatus(429);
++});
++
++it('ferme la session au-delà de 2 heures', function () {
++    $this->withSession([
++        'admin_authenticated' => true,
++        'admin_token' => 'jeton',
++        'admin_login_time' => now()->subHours(3),
++    ])->get('/admin')->assertRedirect(route('admin.login'));
++});
++
++it('déconnecte le gérant', function () {
++    $this->withSession(['admin_authenticated' => true, 'admin_token' => 'jeton', 'admin_login_time' => now()])
++        ->post(route('admin.logout'))
++        ->assertRedirect(route('admin.login'))
++        ->assertSessionMissing('admin_authenticated');
++});
+diff --git a/tests/Feature/AdminContentTest.php b/tests/Feature/AdminContentTest.php
+new file mode 100644
+index 0000000..4626f0e
+--- /dev/null
++++ b/tests/Feature/AdminContentTest.php
+@@ -0,0 +1,99 @@
++<?php
++
++use App\Models\Content;
++use App\Models\Event;
++use App\Models\GalleryImage;
++use App\Models\MenuItem;
++use App\Models\Testimonial;
++use Illuminate\Foundation\Testing\RefreshDatabase;
++use Illuminate\Http\UploadedFile;
++use Illuminate\Support\Facades\Storage;
++
++uses(RefreshDatabase::class);
++
++beforeEach(function () {
++    $this->withoutVite();
++    $this->withSession(['admin_authenticated' => true, 'admin_token' => 'jeton', 'admin_login_time' => now()]);
++});
++
++it('ajoute un plat depuis le back-office et l’affiche sur la carte', function () {
++    $this->post(route('admin.menu-item.store'), [
++        'name' => 'Burger Ligérien', 'type' => 'burger', 'price' => 17, 'is_active' => 1,
++    ])->assertRedirect(route('admin.menu-item.index'));
++
++    expect(MenuItem::where('name', 'Burger Ligérien')->exists())->toBeTrue();
++    $this->get('/menu')->assertSee('Burger Ligérien');
++});
++
++it('refuse un plat sans prix ou avec un type inconnu', function () {
++    $this->post(route('admin.menu-item.store'), ['name' => 'Sans prix', 'type' => 'pizza'])
++        ->assertSessionHasErrors(['price', 'type']);
++
++    expect(MenuItem::count())->toBe(0);
++});
++
++it('modifie le prix d’un plat', function () {
++    $plat = MenuItem::create(['name' => 'Tartare', 'type' => 'plat', 'price' => 18, 'is_active' => true, 'sort_order' => 0]);
++
++    $this->put(route('admin.menu-item.update', $plat), [
++        'name' => 'Tartare', 'type' => 'plat', 'price' => 19.5, 'is_active' => 1,
++    ]);
++
++    expect((float) $plat->fresh()->price)->toBe(19.5);
++});
++
++it('exige au moins 4 photos pour un événement passé', function () {
++    $this->post(route('admin.event.store'), [
++        'title' => 'Soirée passée', 'description' => 'Souvenirs', 'event_date' => '2026-05-01', 'type' => 'past',
++    ])->assertSessionHasErrors('images');
++
++    expect(Event::count())->toBe(0);
++});
++
++it('crée un événement à venir', function () {
++    $this->post(route('admin.event.store'), [
++        'title' => 'Concert du 14 juillet', 'description' => 'Musique live', 'event_date' => now()->addMonth()->toDateString(), 'type' => 'upcoming', 'is_active' => 1,
++    ])->assertRedirect(route('admin.event.index'));
++
++    $this->get('/evenements')->assertSee('Concert du 14 juillet');
++});
++
++it('convertit une photo de la galerie en WebP', function () {
++    Storage::fake('public');
++
++    $this->post(route('admin.image.store'), [
++        'images' => [UploadedFile::fake()->image('terrasse.jpg', 1200, 800)],
++        'category' => 'galerie', 'alt_text' => 'La terrasse au coucher du soleil', 'is_active' => 1,
++    ])->assertRedirect(route('admin.image.index'));
++
++    $image = GalleryImage::first();
++    expect($image->filename)->toEndWith('.webp');
++    Storage::disk('public')->assertExists('gallery/' . $image->filename);
++});
++
++it('accepte une photo déjà au format WebP', function () {
++    Storage::fake('public');
++
++    $this->post(route('admin.image.store'), [
++        'images' => [UploadedFile::fake()->image('plat.webp', 800, 600)],
++        'category' => 'galerie', 'is_active' => 1,
++    ])->assertSessionHasNoErrors();
++
++    expect(GalleryImage::count())->toBe(1);
++});
++
++it('refuse une note d’avis supérieure à 5', function () {
++    $this->post(route('admin.testimonial.store'), [
++        'client_name' => 'Claire', 'stars' => 6, 'comment' => 'Super', 'sort_order' => 1,
++    ])->assertSessionHasErrors('stars');
++
++    expect(Testimonial::count())->toBe(0);
++});
++
++it('conserve le HTML d’un bloc de texte de type html', function () {
++    $this->post(route('admin.content.store'), [
++        'key' => 'accroche', 'title' => 'Accroche', 'type' => 'html', 'content' => '<strong>Bienvenue</strong> au bistrot',
++    ]);
++
++    expect(Content::where('key', 'accroche')->value('content'))->toBe('<strong>Bienvenue</strong> au bistrot');
++});
+diff --git a/tests/Feature/ExampleTest.php b/tests/Feature/ExampleTest.php
+index 8fdc86b..f71e614 100644
+--- a/tests/Feature/ExampleTest.php
++++ b/tests/Feature/ExampleTest.php
+@@ -1,7 +1,11 @@
+ <?php
+ 
+-test('the application returns a successful response', function () {
+-    $response = $this->get('/');
++use Illuminate\Foundation\Testing\RefreshDatabase;
+ 
+-    $response->assertStatus(200);
++uses(RefreshDatabase::class);
++
++it('returns a successful response', function () {
++    $this->withoutVite();
++
++    $this->get('/')->assertStatus(200);
+ });
+diff --git a/tests/Feature/LegacyRedirectsTest.php b/tests/Feature/LegacyRedirectsTest.php
+new file mode 100644
+index 0000000..0674ed5
+--- /dev/null
++++ b/tests/Feature/LegacyRedirectsTest.php
+@@ -0,0 +1,14 @@
++<?php
++
++it('redirige les anciennes pages .html en 301 vers les nouvelles routes', function (string $old, string $new) {
++    $this->get($old)->assertStatus(301)->assertRedirect($new);
++})->with([
++    ['/index.html', '/'],
++    ['/bistrot.html', '/bistrot'],
++    ['/menu.html', '/menu'],
++    ['/galerie.html', '/galerie'],
++    ['/evenements.html', '/evenements'],
++    ['/repas.html', '/repas'],
++    ['/menus-midi.html', '/menus-midi'],
++    ['/menus-groupe.html', '/menus-groupe'],
++]);
+diff --git a/tests/Feature/PublicPagesTest.php b/tests/Feature/PublicPagesTest.php
+new file mode 100644
+index 0000000..2299af8
+--- /dev/null
++++ b/tests/Feature/PublicPagesTest.php
+@@ -0,0 +1,40 @@
++<?php
++
++use App\Models\Event;
++use App\Models\MenuItem;
++use Illuminate\Foundation\Testing\RefreshDatabase;
++
++uses(RefreshDatabase::class);
++
++beforeEach(fn () => $this->withoutVite());
++
++it('affiche chaque page publique', function (string $url) {
++    $this->get($url)->assertOk();
++})->with([
++    'accueil' => '/',
++    'carte' => '/menu',
++    'formules du midi' => '/menus-midi',
++    'menus de groupe' => '/menus-groupe',
++    'repas de groupe' => '/repas',
++    'événements' => '/evenements',
++    'galerie' => '/galerie',
++    'le bistrot' => '/bistrot',
++]);
++
++it('affiche un plat actif sur la carte et masque un plat inactif', function () {
++    MenuItem::create(['name' => 'Burger du Chef', 'type' => 'burger', 'price' => 16.5, 'is_active' => true, 'sort_order' => 1]);
++    MenuItem::create(['name' => 'Plat en rupture', 'type' => 'plat', 'price' => 14, 'is_active' => false, 'sort_order' => 2]);
++
++    $this->get('/menu')
++        ->assertSee('Burger du Chef')
++        ->assertDontSee('Plat en rupture');
++});
++
++it('sépare les événements à venir des événements passés', function () {
++    Event::create(['title' => 'Concert jazz', 'description' => 'Soirée', 'event_date' => now()->addWeek(), 'type' => 'upcoming', 'images' => [], 'is_active' => true]);
++    Event::create(['title' => 'Soirée guinguette', 'description' => 'Souvenirs', 'event_date' => now()->subMonth(), 'type' => 'past', 'images' => [], 'is_active' => true]);
++
++    $this->get('/evenements')
++        ->assertOk()
++        ->assertSeeInOrder(['Concert jazz', 'Soirée guinguette']);
++});
+-- 
+2.43.0
+

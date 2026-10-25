@@ -224,7 +224,7 @@ class AdminController extends Controller
     {
         $request->validate([
             'images' => 'required|array|min:1',
-            'images.*' => 'required|image|mimes:jpeg,png,jpg,gif|max:10240',
+            'images.*' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:10240',
             'category' => 'required',
             'alt_text' => 'nullable',
             'sort_order' => 'nullable|integer',
@@ -259,7 +259,7 @@ class AdminController extends Controller
     {
         $request->validate([
             'name' => 'required',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:10240',
             'category' => 'required',
             'alt_text' => 'nullable',
             'sort_order' => 'nullable|integer',
@@ -697,7 +697,7 @@ class AdminController extends Controller
     {
         $request->validate([
             'images' => 'required|array|min:1',
-            'images.*' => 'required|image|mimes:jpeg,png,jpg,gif|max:10240'
+            'images.*' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:10240'
         ]);
 
         $uploadedCount = 0;
@@ -729,7 +729,7 @@ class AdminController extends Controller
     public function middayMenuUpdateImage(Request $request, MiddayMenu $middayMenu)
     {
         $request->validate([
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:10240'
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:10240'
         ]);
 
         // Supprimer l'ancienne image
@@ -755,7 +755,7 @@ class AdminController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:10240',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:10240',
             'sort_order' => 'nullable|integer|min:0',
             'is_active' => 'boolean'
         ]);
@@ -785,7 +785,7 @@ class AdminController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:10240',
             'sort_order' => 'nullable|integer|min:0',
             'is_active' => 'boolean'
         ]);
@@ -898,7 +898,7 @@ class AdminController extends Controller
     public function carouselStore(Request $request)
     {
         $request->validate([
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:10240',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:10240',
             'alt_text' => 'nullable|string|max:255',
             'sort_order' => 'nullable|integer|min:0',
             'is_active' => 'boolean'
@@ -930,7 +930,7 @@ class AdminController extends Controller
     public function carouselUpdate(Request $request, Image $image)
     {
         $request->validate([
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:10240',
             'alt_text' => 'nullable|string|max:255',
             'sort_order' => 'nullable|integer|min:0',
             'is_active' => 'boolean'

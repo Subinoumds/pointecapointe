@@ -36,22 +36,19 @@ class AdminSecurityMiddleware
             return redirect()->route('admin.login')->with('error', 'Session expirée.');
         }
 
-        // Protection contre les attaques par force brute (seulement sur les tentatives de connexion)
-        if ($request->is('admin/login') && $request->isMethod('POST')) {
-            $key = 'admin-login-attempts:' . $request->ip();
-            if (RateLimiter::tooManyAttempts($key, 5)) {
-                $seconds = RateLimiter::availableIn($key);
-                return response()->view('admin.auth.blocked', compact('seconds'), 429);
+        // Protection contre les attaques XSS : on nettoie uniquement les champs envoyés,
+        // sauf le contenu des blocs de type HTML, qui doit garder ses balises.
+        $sanitized = [];
+        foreach (['name', 'description', 'content'] as $field) {
+            if (! $request->has($field)) {
+                continue;
             }
+            if ($field === 'content' && $request->input('type') === 'html') {
+                continue;
+            }
+            $sanitized[$field] = strip_tags((string) $request->input($field));
         }
-
-        // Protection contre les attaques XSS
-        $request->merge([
-            'password' => strip_tags($request->input('password', '')),
-            'name' => strip_tags($request->input('name', '')),
-            'description' => strip_tags($request->input('description', '')),
-            'content' => strip_tags($request->input('content', ''))
-        ]);
+        $request->merge($sanitized);
 
         // Headers de sécurité
         $response = $next($request);

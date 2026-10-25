@@ -55,38 +55,15 @@ Route::get('/bistrot', function () {
     return view('bistrot');
 })->name('bistrot');
 
-// Redirections pour les anciens liens HTML
-Route::get('/index.html', function () {
-    return redirect()->route('home');
-});
-
-Route::get('/bistrot.html', function () {
-    return redirect()->route('bistrot');
-});
-
-Route::get('/menu.html', function () {
-    return redirect()->route('menu');
-});
-
-Route::get('/galerie.html', function () {
-    return redirect()->route('galerie');
-});
-
-Route::get('/evenements.html', function () {
-    return redirect()->route('evenements');
-});
-
-Route::get('/repas.html', function () {
-    return redirect()->route('repas');
-});
-
-Route::get('/menus-midi.html', function () {
-    return redirect()->route('menus.midi');
-});
-
-Route::get('/menus-groupe.html', function () {
-    return redirect()->route('menus.groupe');
-});
+// Redirections permanentes (301) des anciennes pages HTML, pour conserver le référencement
+Route::permanentRedirect('/index.html', '/');
+Route::permanentRedirect('/bistrot.html', '/bistrot');
+Route::permanentRedirect('/menu.html', '/menu');
+Route::permanentRedirect('/galerie.html', '/galerie');
+Route::permanentRedirect('/evenements.html', '/evenements');
+Route::permanentRedirect('/repas.html', '/repas');
+Route::permanentRedirect('/menus-midi.html', '/menus-midi');
+Route::permanentRedirect('/menus-groupe.html', '/menus-groupe');
 
 // Routes d'authentification admin
 Route::prefix('admin')->name('admin.')->group(function () {
