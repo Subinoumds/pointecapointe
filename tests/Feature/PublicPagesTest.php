@@ -19,6 +19,8 @@ it('affiche chaque page publique', function (string $url) {
     'événements' => '/evenements',
     'galerie' => '/galerie',
     'le bistrot' => '/bistrot',
+    'mentions légales' => '/mentions-legales',
+    'politique de confidentialité' => '/politique-de-confidentialite',
 ]);
 
 it('affiche un plat actif sur la carte et masque un plat inactif', function () {

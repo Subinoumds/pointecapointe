@@ -248,9 +248,14 @@
             </div>
         </div>
         
-        <!-- Bas de page avec crédits discrets -->
-        <div class="border-t border-white/10 mt-12 pt-8 text-center text-sm text-white/60">
-            <p>
+        <!-- Bas de page avec mentions légales et crédits -->
+        <div class="border-t border-white/10 mt-12 pt-8 text-center text-sm text-white/70">
+            <div class="flex flex-wrap justify-center items-center gap-x-6 gap-y-2 mb-4 font-medium">
+                <a href="{{ route('mentions-legales') }}" class="hover:text-secondary-yellow underline underline-offset-4 transition-colors duration-300">Mentions Légales</a>
+                <span class="text-white/30" aria-hidden="true">•</span>
+                <a href="{{ route('politique-confidentialite') }}" class="hover:text-secondary-yellow underline underline-offset-4 transition-colors duration-300">Politique de Confidentialité</a>
+            </div>
+            <p class="text-xs text-white/60">
                 &copy; {{ date('Y') }} Pointe ça Pointe. Tous droits réservés. 
                 <span class="mx-2" aria-hidden="true">|</span> 
                 Créé par <a href="https://khadidja-masri.fr" target="_blank" rel="noopener noreferrer" class="hover:text-secondary-yellow underline transition-colors duration-300" aria-label="Créé par Khadidja Masri (ouvre un nouvel onglet)">Khadidja Masri</a>

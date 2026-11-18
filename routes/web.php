@@ -55,6 +55,14 @@ Route::get('/bistrot', function () {
     return view('bistrot');
 })->name('bistrot');
 
+Route::get('/mentions-legales', function () {
+    return view('mentions-legales');
+})->name('mentions-legales');
+
+Route::get('/politique-de-confidentialite', function () {
+    return view('politique-confidentialite');
+})->name('politique-confidentialite');
+
 // Redirections permanentes (301) des anciennes pages HTML, pour conserver le référencement
 Route::permanentRedirect('/index.html', '/');
 Route::permanentRedirect('/bistrot.html', '/bistrot');
@@ -64,6 +72,11 @@ Route::permanentRedirect('/evenements.html', '/evenements');
 Route::permanentRedirect('/repas.html', '/repas');
 Route::permanentRedirect('/menus-midi.html', '/menus-midi');
 Route::permanentRedirect('/menus-groupe.html', '/menus-groupe');
+Route::permanentRedirect('/mentions-legales.html', '/mentions-legales');
+Route::permanentRedirect('/politique-de-confidentialite.html', '/politique-de-confidentialite');
+Route::permanentRedirect('/politique-confidentialite', '/politique-de-confidentialite');
+Route::permanentRedirect('/privacy', '/politique-de-confidentialite');
+Route::permanentRedirect('/legal', '/mentions-legales');
 
 // Routes d'authentification admin
 Route::prefix('admin')->name('admin.')->group(function () {
