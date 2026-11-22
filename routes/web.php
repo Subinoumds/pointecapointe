@@ -63,6 +63,10 @@ Route::get('/politique-de-confidentialite', function () {
     return view('politique-confidentialite');
 })->name('politique-confidentialite');
 
+Route::get('/fermeture-temporaire', function () {
+    return view('fermeture-temporaire', ['isTemporaryClosure' => true]);
+})->name('closure');
+
 // Redirections permanentes (301) des anciennes pages HTML, pour conserver le référencement
 Route::permanentRedirect('/index.html', '/');
 Route::permanentRedirect('/bistrot.html', '/bistrot');
